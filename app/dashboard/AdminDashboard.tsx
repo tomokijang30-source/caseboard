@@ -357,7 +357,7 @@ export async function AdminDashboard({
                             <div className="mt-2 flex items-center gap-2 text-xs">
                               <Link
                                 href={`/cases/${c.id}`}
-                                className="rounded-md border border-gray-900 bg-gray-900 px-2.5 py-1 font-medium text-white hover:bg-gray-800"
+                                className="rounded-md border border-gray-300 bg-gray-50 px-2.5 py-1 font-medium text-gray-800 hover:bg-gray-100 hover:text-gray-900"
                               >
                                 📝 메모·상세
                               </Link>
@@ -441,7 +441,7 @@ function InviteSection({ invites }: { invites: Invite[] }) {
                 <InviteCodeCopy code={i.code} />
                 <span className="text-xs text-gray-500">
                   {i.expires_at
-                    ? `만료: ${new Date(i.expires_at).toLocaleDateString("ko-KR")}`
+                    ? `만료: ${new Date(i.expires_at).toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" })}`
                     : "만료 없음"}
                 </span>
               </div>
@@ -561,6 +561,7 @@ function ActivityFeed({ events }: { events: Event[] }) {
               <span className="min-w-0 flex-1">{label}</span>
               <span className="shrink-0 text-[11px] text-gray-400">
                 {new Date(e.created_at).toLocaleString("ko-KR", {
+                  timeZone: "Asia/Seoul",
                   month: "numeric",
                   day: "numeric",
                   hour: "2-digit",

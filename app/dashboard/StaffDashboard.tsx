@@ -173,7 +173,7 @@ export async function StaffDashboard({
                 <div className="mt-3 flex items-center gap-2 text-xs">
                   <Link
                     href={`/cases/${c.id}`}
-                    className="rounded-md border border-gray-900 bg-gray-900 px-2.5 py-1 font-medium text-white hover:bg-gray-800"
+                    className="rounded-md border border-gray-300 bg-gray-50 px-2.5 py-1 font-medium text-gray-800 hover:bg-gray-100 hover:text-gray-900"
                   >
                     📝 메모·상세
                   </Link>

@@ -154,6 +154,7 @@ export default async function CaseDetailPage({
                   </span>
                   <span>
                     {new Date(n.created_at).toLocaleString("ko-KR", {
+                      timeZone: "Asia/Seoul",
                       month: "numeric",
                       day: "numeric",
                       hour: "2-digit",

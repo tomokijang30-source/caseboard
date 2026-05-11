@@ -100,7 +100,7 @@ export default async function BillingPage() {
             <div>
               <dt className="text-xs text-gray-500">현재 결제 주기 종료</dt>
               <dd className="mt-1 font-medium text-gray-900">
-                {new Date(sub.current_period_end).toLocaleDateString("ko-KR")}
+                {new Date(sub.current_period_end).toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" })}
               </dd>
             </div>
           )}
@@ -108,7 +108,7 @@ export default async function BillingPage() {
             <div>
               <dt className="text-xs text-gray-500">최종 입금</dt>
               <dd className="mt-1 font-medium text-gray-900">
-                {new Date(sub.last_paid_at).toLocaleDateString("ko-KR")}
+                {new Date(sub.last_paid_at).toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" })}
               </dd>
             </div>
           )}
