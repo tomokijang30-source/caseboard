@@ -2,6 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { BILLING, formatKRW, withVat } from "@/lib/billing/config";
+import { reportPayment } from "./actions";
+import { SubmitButton } from "@/app/cases/SubmitButton";
 
 const STATUS_LABEL: Record<string, string> = {
   pending: "결제 대기",
@@ -24,9 +26,14 @@ type Subscription = {
   current_period_start: string | null;
   current_period_end: string | null;
   last_paid_at: string | null;
+  last_payment_reported_at: string | null;
 };
 
-export default async function BillingPage() {
+export default async function BillingPage({
+  searchParams,
+}: {
+  searchParams: { reported?: string; error?: string };
+}) {
   const supabase = createClient();
   const {
     data: { user },
@@ -48,7 +55,7 @@ export default async function BillingPage() {
 
   const { data: sub } = await supabase
     .from("subscriptions")
-    .select("status, plan_amount_krw, vat_included, current_period_start, current_period_end, last_paid_at")
+    .select("status, plan_amount_krw, vat_included, current_period_start, current_period_end, last_paid_at, last_payment_reported_at")
     .eq("office_id", profile.office_id)
     .single<Subscription>();
 
@@ -114,6 +121,18 @@ export default async function BillingPage() {
           )}
         </dl>
 
+        {searchParams.reported && (
+          <div className="mt-4 rounded-md border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+            ✅ <b>결제 완료 신고가 접수되었습니다.</b> 운영자가 입금을 확인하면
+            보통 1시간 이내(영업 시간 기준)로 활성화/연장됩니다.
+          </div>
+        )}
+        {searchParams.error && (
+          <div className="mt-4 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
+            {searchParams.error}
+          </div>
+        )}
+
         {showInstructions && (
           <div
             className={
@@ -136,12 +155,77 @@ export default async function BillingPage() {
             <div className="mt-3 rounded-md bg-white px-3 py-2 font-mono text-sm">
               {BILLING.bankName} {BILLING.accountNumber} ({BILLING.accountHolder})
             </div>
+
+            <form action={reportPayment} className="mt-4">
+              <SubmitButton
+                pendingText="신고 중..."
+                className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
+              >
+                💰 결제 완료 신고
+              </SubmitButton>
+              <p className="mt-2 text-xs text-gray-600">
+                입금하셨으면 클릭. 운영자에게 즉시 알림이 가서 확인 후
+                활성화/연장됩니다.
+                {sub.last_payment_reported_at && (
+                  <>
+                    <br />
+                    <span className="text-gray-400">
+                      마지막 신고:{" "}
+                      {new Date(sub.last_payment_reported_at).toLocaleString(
+                        "ko-KR",
+                        {
+                          timeZone: "Asia/Seoul",
+                          month: "numeric",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        },
+                      )}
+                    </span>
+                  </>
+                )}
+              </p>
+            </form>
           </div>
         )}
 
         {sub.status === "active" && (
-          <div className="mt-6 rounded-md border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
-            정상 사용 중입니다. 다음 결제 주기 종료 1주 전에 안내 메일을 보내드립니다.
+          <div className="mt-6 rounded-md border border-emerald-200 bg-emerald-50 p-4">
+            <p className="text-sm text-emerald-900">
+              정상 사용 중입니다. 결제 주기 종료 1주 전에 안내 메일을 보내드립니다.
+            </p>
+            <div className="mt-3 border-t border-emerald-200 pt-3">
+              <p className="mb-2 text-xs text-emerald-900">
+                <b>다음 달분 입금하셨으면 아래 버튼으로 신고해주세요.</b>{" "}
+                운영자가 확인 후 1개월 연장합니다.
+              </p>
+              <div className="rounded-md bg-white px-3 py-2 font-mono text-sm text-gray-700">
+                {BILLING.bankName} {BILLING.accountNumber} ({BILLING.accountHolder})
+              </div>
+              <form action={reportPayment} className="mt-3">
+                <SubmitButton
+                  pendingText="신고 중..."
+                  className="rounded-md border border-emerald-700 bg-white px-4 py-2 text-sm font-medium text-emerald-900 hover:bg-emerald-100"
+                >
+                  💰 다음 달 결제 완료 신고
+                </SubmitButton>
+                {sub.last_payment_reported_at && (
+                  <p className="mt-2 text-xs text-emerald-700">
+                    마지막 신고:{" "}
+                    {new Date(sub.last_payment_reported_at).toLocaleString(
+                      "ko-KR",
+                      {
+                        timeZone: "Asia/Seoul",
+                        month: "numeric",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      },
+                    )}
+                  </p>
+                )}
+              </form>
+            </div>
           </div>
         )}
 

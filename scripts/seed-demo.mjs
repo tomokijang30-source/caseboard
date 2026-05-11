@@ -327,6 +327,13 @@ const { data: profile, error: profileErr } = await sb
 if (profileErr) bail(`profile 조회 실패: ${profileErr.message}`);
 const officeId = profile.office_id;
 
+// 어드민 패널에서 실고객과 시각적으로 분리하기 위해 is_demo=true 설정
+const { error: demoFlagErr } = await sb
+  .from("offices")
+  .update({ is_demo: true })
+  .eq("id", officeId);
+if (demoFlagErr) console.warn(`  ⚠ is_demo 플래그 설정 실패 (마이그레이션 0012 적용 필요): ${demoFlagErr.message}`);
+
 const { data: invite } = await sb
   .from("office_invites")
   .select("code")
