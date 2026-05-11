@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>CaseBoard 상세 안내 — 변호사 사무실 사건 관리 SaaS</title>
+<style>
+  @page { size: A4; margin: 12mm 14mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Malgun Gothic", "맑은 고딕", -apple-system, sans-serif;
+    color: #111;
+    line-height: 1.45;
+    font-size: 10.5pt;
+  }
+  .page {
+    page-break-after: always;
+    padding-bottom: 4mm;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  /* ===== 공통 ===== */
+  .brand {
+    border-bottom: 2.5px solid #111;
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .brand .logo {
+    font-size: 22pt;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .brand .tagline {
+    font-size: 9.5pt;
+    color: #555;
+  }
+  .brand .page-num {
+    font-size: 9pt;
+    color: #888;
+  }
+
+  h2 {
+    font-size: 14pt;
+    margin: 0 0 8px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+  }
+  h3 {
+    font-size: 11.5pt;
+    margin: 0 0 6px;
+    font-weight: 700;
+    color: #0a5cab;
+  }
+  p { margin: 4px 0; }
+
+  /* ===== Page 1: Hero ===== */
+  .hero-question {
+    background: #f7f7f7;
+    border-left: 4px solid #111;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+  }
+  .hero-question .sub {
+    font-size: 10pt;
+    color: #555;
+    margin-bottom: 4px;
+  }
+  .hero-question .q {
+    font-size: 16pt;
+    font-weight: 800;
+    color: #b00020;
+    margin: 2px 0 8px;
+    letter-spacing: -0.5px;
+  }
+  .hero-question .a {
+    font-size: 11pt;
+    color: #111;
+  }
+  .hero-question .a b { color: #0a5cab; }
+
+  /* ===== 화면 섹션 ===== */
+  .screen-block {
+    margin-bottom: 14px;
+  }
+  .screen-block .label {
+    display: inline-block;
+    background: #0a5cab;
+    color: white;
+    font-size: 8.5pt;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+  }
+  .screen-block .label.staff { background: #117a3d; }
+  .screen-block .label.case { background: #6b3fa0; }
+  .screen-block .title {
+    font-size: 13pt;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: -0.3px;
+  }
+  .screen-block .desc {
+    font-size: 9.5pt;
+    color: #555;
+    margin-bottom: 8px;
+  }
+  .screen-img {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: block;
+    background: #fafafa;
+    min-height: 90mm;
+    object-fit: contain;
+  }
+  .screen-img-fallback {
+    width: 100%;
+    border: 1.5px dashed #bbb;
+    background: #fafafa;
+    height: 95mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 10pt;
+    border-radius: 4px;
+  }
+  .annotations {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .annotations.two { grid-template-columns: 1fr 1fr; }
+  .annotation {
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    padding: 6px 8px;
+    font-size: 9pt;
+    line-height: 1.4;
+  }
+  .annotation b {
+    color: #0a5cab;
+    display: block;
+    margin-bottom: 1px;
+    font-size: 9.5pt;
+  }
+
+  /* ===== Page 3 ===== */
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px 14px;
+    margin-bottom: 16px;
+  }
+  .why-item {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+  }
+  .why-item .num {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: #0a5cab;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 9pt;
+    font-weight: 700;
+    line-height: 20px;
+    margin-right: 6px;
+  }
+  .why-item .name {
+    display: inline-block;
+    font-size: 10.5pt;
+    font-weight: 700;
+    vertical-align: middle;
+  }
+  .why-item .body {
+    font-size: 9pt;
+    color: #444;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .price-box {
+    border: 2.5px solid #111;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fffbea;
+  }
+  .price-box .left .label {
+    font-size: 9pt;
+    color: #555;
+    margin-bottom: 2px;
+  }
+  .price-box .left .num {
+    font-size: 26pt;
+    font-weight: 800;
+    color: #0a5cab;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+  .price-box .left .sub {
+    font-size: 9pt;
+    color: #555;
+    margin-top: 4px;
+  }
+  .price-box .right {
+    text-align: right;
+    font-size: 9.5pt;
+    line-height: 1.6;
+  }
+  .price-box .right .chk { color: #117a3d; font-weight: 700; }
+
+  .cta {
+    border-top: 2px solid #111;
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+  }
+  .cta .left .label {
+    font-size: 9pt;
+    color: #555;
+  }
+  .cta .left .url {
+    font-family: "Consolas", monospace;
+    font-size: 12pt;
+    color: #0a5cab;
+    font-weight: 700;
+    margin: 2px 0 8px;
+  }
+  .cta .left .contact {
+    font-size: 9.5pt;
+    line-height: 1.6;
+  }
+  .cta .left .contact b { color: #111; }
+  .cta .qr {
+    text-align: center;
+  }
+  .cta .qr img {
+    width: 95px;
+    height: 95px;
+    border: 1px solid #ddd;
+  }
+  .cta .qr .label {
+    font-size: 8pt;
+    color: #555;
+    margin-top: 2px;
+  }
+
+  .footer {
+    margin-top: 10px;
+    padding-top: 6px;
+    border-top: 1px dashed #aaa;
+    font-size: 8pt;
+    color: #777;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============= Page 1 ============= -->
+<div class="page">
+  <div class="brand">
+    <div>
+      <div class="logo">CaseBoard</div>
+      <div class="tagline">변호사 사무실 사건 관리 SaaS · 상세 안내</div>
+    </div>
+    <div class="page-num">1 / 3</div>
+  </div>
+
+  <div class="hero-question">
+    <div class="sub">변호사 사무실 대표·사무장님이 매주 마주하는 질문</div>
+    <div class="q">"지금 누가 무슨 사건 잡고 있지?"</div>
+    <div class="a">
+      직원 5명 이상이면 카톡·엑셀로 파악이 안 됩니다.
+      <br />
+      <b>CaseBoard는 그 질문을 다시 하지 않으셔도 되도록</b> 만든 한 화면짜리 도구입니다.
+    </div>
+  </div>
+
+  <div class="screen-block">
+    <span class="label">사장 / 사무장 화면</span>
+    <div class="title">전 직원 사건 현황을 한 화면에</div>
+    <div class="desc">로그인하면 가장 먼저 보이는 메인 대시보드. 직원이 진행 중인 모든 사건이 한 페이지에 표시됩니다.</div>
+    <img class="screen-img" src="screenshot-admin.png" alt="사장 화면 스크린샷"
+         onerror="this.outerHTML='<div class=\'screen-img-fallback\'>[ 사장 대시보드 스크린샷 위치 ]<br>sales/screenshot-admin.png</div>'" />
+    <div class="annotations">
+      <div class="annotation">
+        <b>① 직원별 사건 한눈에</b>
+        담당자 이름·사건명·의뢰인·마감 한 줄 표시. 누가 일이 많고 누가 비어있는지 즉시.
+      </div>
+      <div class="annotation">
+        <b>② 마감 임박 · 지난 사건 자동 표시</b>
+        마감 3일 이내(주황) / 지난 사건(빨강) 자동 정렬. 펑크 사전 방지.
+      </div>
+      <div class="annotation">
+        <b>③ 3일 이상 정체 사건 알림</b>
+        업데이트 없는 사건 자동 경고. "왜 멈춰있지?" 사무장이 묻기 전에 보임.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============= Page 2 ============= -->
+<div class="page">
+  <div class="brand">
+    <div>
+      <div class="logo">CaseBoard</div>
+      <div class="tagline">직원 화면 · 사건 상세</div>
+    </div>
+    <div class="page-num">2 / 3</div>
+  </div>
+
+  <div class="screen-block">
+    <span class="label staff">직원 화면</span>
+    <div class="title">내 사건만 깔끔하게</div>
+    <div class="desc">직원은 본인 담당 케이스만 보입니다. 산만하지 않고, 사장 화면과 동일한 UI라 학습 따로 안 함.</div>
+    <img class="screen-img" src="screenshot-staff.png" alt="직원 화면 스크린샷"
+         onerror="this.outerHTML='<div class=\'screen-img-fallback\'>[ 직원 대시보드 스크린샷 위치 ]<br>sales/screenshot-staff.png</div>'" />
+    <div class="annotations">
+      <div class="annotation">
+        <b>① 새 케이스 1줄 등록</b>
+        사건명 · 의뢰인만 입력하면 끝. 상세 정보는 나중에.
+      </div>
+      <div class="annotation">
+        <b>② 상태 변경 버튼 한 번</b>
+        대기 / 진행 / 완료 — 카톡 답장 보내듯 클릭 한 번. 새로 배울 거 없음.
+      </div>
+      <div class="annotation">
+        <b>③ 자기 일만 표시</b>
+        다른 직원 사건 안 섞임. 본인 마감/정체만 확인.
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-block">
+    <span class="label case">사건 상세 화면</span>
+    <div class="title">진행 흐름이 시간순으로 누적</div>
+    <div class="desc">사건 클릭하면 진행 메모가 시간순으로 쌓입니다. 한 번 쓴 메모는 수정·삭제 불가 → 기록 신뢰성.</div>
+    <img class="screen-img" src="screenshot-case-detail.png" alt="사건 상세 스크린샷"
+         onerror="this.outerHTML='<div class=\'screen-img-fallback\'>[ 사건 상세 스크린샷 위치 ]<br>sales/screenshot-case-detail.png</div>'" />
+    <div class="annotations two">
+      <div class="annotation">
+        <b>① 작성자·시간 자동 기록</b>
+        누가 언제 무엇을 했는지 자동. 추적·인수인계 용이.
+      </div>
+      <div class="annotation">
+        <b>② 수정·삭제 불가</b>
+        진행 기록은 사후 변조 불가 → 분쟁 시 근거로도 활용 가능.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============= Page 3 ============= -->
+<div class="page">
+  <div class="brand">
+    <div>
+      <div class="logo">CaseBoard</div>
+      <div class="tagline">차별점 · 가격 · 문의</div>
+    </div>
+    <div class="page-num">3 / 3</div>
+  </div>
+
+  <h2>왜 CaseBoard 인가</h2>
+  <div class="why-grid">
+    <div class="why-item">
+      <span class="num">1</span><span class="name">요청 기능 2-3일 내 반영</span>
+      <div class="body">대표가 직접 개발자입니다. 사무실에서 필요한 기능 말씀해주시면 평균 2-3일, 길어도 1주일 내 만들어드립니다. 큰 SaaS는 절대 못 함.</div>
+    </div>
+    <div class="why-item">
+      <span class="num">2</span><span class="name">인원수 무관 단일 가격</span>
+      <div class="body">5명이든 15명이든 동일 165,000원/월. 인원 늘어도 추가 비용 X. 직원 채용·해고 신경 안 써도 됨.</div>
+    </div>
+    <div class="why-item">
+      <span class="num">3</span><span class="name">약정 없음 · 매월 결제</span>
+      <div class="body">계약서 X. 매월 결제 → 별로면 다음 달 해지. 부담 없이 1개월 써보고 판단 가능.</div>
+    </div>
+    <div class="why-item">
+      <span class="num">4</span><span class="name">1:1 직접 응대</span>
+      <div class="body">대표 직통 문자·카톡·전화. 콜센터 X, ARS X. 사무실 도입 후에도 같은 사람이 끝까지 책임.</div>
+    </div>
+    <div class="why-item">
+      <span class="num">5</span><span class="name">한국 서버 · 암호화</span>
+      <div class="body">의뢰인 정보 한국 내 보관. 데이터베이스 암호화. 의뢰인 정보보호 의무에 안전.</div>
+    </div>
+    <div class="why-item">
+      <span class="num">6</span><span class="name">학습 시간 5분</span>
+      <div class="body">카톡 쓸 줄 알면 사용 가능. 직원 교육 따로 안 해도 됨. 그날 바로 도입 가능.</div>
+    </div>
+  </div>
+
+  <div class="price-box">
+    <div class="left">
+      <div class="label">사무실 단가 (인원 무관)</div>
+      <div class="num">월 165,000원</div>
+      <div class="sub">VAT 포함 · 약정 없음 · 매월 결제</div>
+    </div>
+    <div class="right">
+      <span class="chk">✓</span> 인원수 제한 없음<br />
+      <span class="chk">✓</span> 추가 기능 개발 무료<br />
+      <span class="chk">✓</span> 데이터 이전 도와드림<br />
+      <span class="chk">✓</span> 도입 당일 사용 가능
+    </div>
+  </div>
+
+  <div class="cta">
+    <div class="left">
+      <div class="label">문의 및 데모 요청</div>
+      <div class="url">caseboard-eight.vercel.app</div>
+      <div class="contact">
+        <b>장유승</b> · 대표 / 개발자<br />
+        📞 010-7647-1312<br />
+        📧 caseboard443@gmail.com
+      </div>
+    </div>
+    <div class="qr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fcaseboard-eight.vercel.app&margin=0" alt="QR" />
+      <div class="label">QR → 사이트</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    CaseBoard · 2026 · 변호사 사무실 사건 관리 SaaS · 본 자료는 영업용 상세 안내자료입니다.
+  </div>
+</div>
+
+</body>
+</html>

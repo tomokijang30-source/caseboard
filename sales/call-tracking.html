@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>CaseBoard 일일 통화 기록</title>
+<style>
+  @page { size: A4; margin: 8mm 10mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Malgun Gothic", "맑은 고딕", -apple-system, sans-serif;
+    font-size: 10pt;
+    line-height: 1.3;
+    color: #111;
+    margin: 0;
+  }
+  h1 {
+    font-size: 14pt;
+    margin: 0 0 4px;
+    border-bottom: 2px solid #111;
+    padding-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  h1 small { font-size: 8.5pt; font-weight: normal; color: #555; }
+
+  .top-info {
+    display: flex;
+    gap: 14px;
+    margin: 6px 0;
+    font-size: 9.5pt;
+  }
+  .top-info .field {
+    flex: 1;
+    border-bottom: 1px solid #999;
+    padding: 0 4px 2px;
+  }
+  .top-info .field b { color: #555; margin-right: 4px; }
+
+  .scoreboard {
+    display: flex;
+    gap: 8px;
+    margin: 4px 0 8px;
+    font-size: 9pt;
+  }
+  .scoreboard .box {
+    flex: 1;
+    border: 1px solid #aaa;
+    padding: 5px 8px;
+    border-radius: 3px;
+    text-align: center;
+    background: #fafafa;
+  }
+  .scoreboard .box b { font-size: 14pt; display: block; }
+  .scoreboard .box span { font-size: 8.5pt; color: #555; }
+  .scoreboard .box.target { background: #fff8dc; border-color: #d4a017; }
+
+  table.calls {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 4px;
+  }
+  table.calls th {
+    background: #111;
+    color: white;
+    font-size: 8.5pt;
+    padding: 4px;
+    text-align: left;
+  }
+  table.calls td {
+    border: 1px solid #999;
+    height: 38px;
+    vertical-align: top;
+    padding: 3px 4px;
+    font-size: 9pt;
+  }
+  table.calls .col-num { width: 24px; text-align: center; background: #f0f0f0; font-weight: 600; color: #666; }
+  table.calls .col-name { width: 140px; }
+  table.calls .col-phone { width: 100px; }
+  table.calls .col-who { width: 80px; }
+  table.calls .col-result { width: 70px; text-align: center; }
+  table.calls .col-action { width: 110px; }
+  table.calls .col-memo { /* fill rest */ }
+
+  .legend {
+    margin-top: 4px;
+    font-size: 8.5pt;
+    color: #333;
+    background: #f4f4f4;
+    padding: 4px 8px;
+    border-radius: 3px;
+  }
+  .legend b { color: #111; }
+  .legend .pill {
+    display: inline-block;
+    padding: 0 5px;
+    margin: 0 2px;
+    border-radius: 8px;
+    font-size: 8pt;
+    color: white;
+    font-weight: 600;
+  }
+  .pill-met { background: #0a8043; }
+  .pill-cb { background: #0a5cab; }
+  .pill-mail { background: #d4a017; color: #4d3500;}
+  .pill-no { background: #666; }
+  .pill-rej { background: #b00020; }
+
+  .bottom {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .bottom .panel {
+    border: 1px solid #999;
+    border-radius: 3px;
+    padding: 6px 8px;
+  }
+  .bottom .panel h3 {
+    margin: 0 0 4px;
+    font-size: 9.5pt;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 2px;
+  }
+  .bottom .lines {
+    min-height: 60px;
+  }
+  .bottom .line {
+    border-bottom: 1px dashed #bbb;
+    height: 20px;
+  }
+
+  .self-eval {
+    margin-top: 8px;
+    border: 1.5px solid #111;
+    border-radius: 3px;
+    padding: 6px 8px;
+  }
+  .self-eval h3 {
+    margin: 0 0 4px;
+    font-size: 9.5pt;
+  }
+  .self-eval .questions {
+    font-size: 9pt;
+  }
+  .self-eval .questions div {
+    border-bottom: 1px dashed #bbb;
+    height: 20px;
+    padding: 1px 0;
+  }
+  .self-eval .questions div b { color: #555; margin-right: 6px; }
+
+  .footer {
+    margin-top: 6px;
+    padding-top: 3px;
+    border-top: 1px dashed #999;
+    font-size: 8pt;
+    color: #555;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<h1>CaseBoard 일일 통화 기록 <small>매일 1장 인쇄 · 통화하면서 펜으로 즉시 기록</small></h1>
+
+<div class="top-info">
+  <div class="field"><b>날짜</b>____________________</div>
+  <div class="field"><b>요일</b>____</div>
+  <div class="field"><b>날씨/컨디션</b>____________</div>
+  <div class="field"><b>오늘 컬렉션</b>____________</div>
+</div>
+
+<div class="scoreboard">
+  <div class="box target"><b>10</b><span>목표 통화</span></div>
+  <div class="box"><b>__</b><span>실제 통화</span></div>
+  <div class="box"><b>__</b><span>결정권자 연결</span></div>
+  <div class="box"><b>__</b><span>미팅 약속</span></div>
+  <div class="box"><b>__</b><span>이메일 받음</span></div>
+  <div class="box"><b>__</b><span>거절</span></div>
+</div>
+
+<table class="calls">
+  <tr>
+    <th class="col-num">#</th>
+    <th class="col-name">사무실명</th>
+    <th class="col-phone">전화번호</th>
+    <th class="col-who">받은 사람</th>
+    <th class="col-result">결과</th>
+    <th class="col-action">다음 액션</th>
+    <th class="col-memo">메모 (페인 포인트 / 사무장 이름 / 분위기)</th>
+  </tr>
+  <tr><td class="col-num">1</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="col-num">2</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="col-num">3</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="col-num">4</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="col-num">5</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="col-num">6</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="col-num">7</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="col-num">8</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="col-num">9</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><td class="col-num">10</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</table>
+
+<div class="legend">
+  <b>결과 코드:</b>
+  <span class="pill pill-met">미팅</span>=미팅 약속 잡힘
+  <span class="pill pill-cb">콜백</span>=다시 전화 약속
+  <span class="pill pill-mail">메일</span>=메일 보냄/받음
+  <span class="pill pill-no">부재</span>=사무장 부재, 다시 전화 필요
+  <span class="pill pill-rej">거절</span>=명확한 거절
+</div>
+
+<div class="bottom">
+  <div class="panel">
+    <h3>📅 오늘 잡힌 미팅 (날짜·시간·주소)</h3>
+    <div class="lines">
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>📞 내일 다시 연락 (사무실명·이유)</h3>
+    <div class="lines">
+      <div class="line"></div>
+      <div class="line"></div>
+      <div class="line"></div>
+    </div>
+  </div>
+</div>
+
+<div class="self-eval">
+  <h3>🔍 오늘의 자체 평가 (저녁에 30초)</h3>
+  <div class="questions">
+    <div><b>가장 잘 됐던 통화는?</b></div>
+    <div><b>가장 어색했던 부분은? (멘트 어디서 막혔나)</b></div>
+    <div><b>내일 바꿀 한 가지는?</b></div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>CaseBoard · 장유승 · 010-7647-1312 · caseboard443@gmail.com</span>
+  <span>거절 8번에 미팅 1건이 정답 · 종이 1장 = 하루 기록</span>
+</div>
+
+</body>
+</html>

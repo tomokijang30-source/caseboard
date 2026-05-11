@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>CaseBoard 명함 뒷면</title>
+<style>
+  /* 비즈하우스 가로형 90×50mm — 92×52mm 작업 */
+  @page { size: 92mm 52mm; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 92mm; height: 52mm; }
+  body {
+    font-family: "Malgun Gothic", "맑은 고딕", -apple-system, sans-serif;
+    color: #000000;
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card {
+    position: absolute;
+    top: 4mm;
+    left: 4mm;
+    right: 4mm;
+    bottom: 4mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  /* 상단: 큰 슬로건 */
+  .tagline {
+    text-align: center;
+    margin-top: 1mm;
+  }
+  .tagline .quote {
+    font-size: 13pt;
+    font-weight: 800;
+    letter-spacing: -0.4pt;
+    color: #000;
+    line-height: 1.15;
+  }
+  .tagline .quote .arrow {
+    margin: 0 1mm;
+    font-weight: 600;
+  }
+  .tagline .sub {
+    font-size: 6.6pt;
+    margin-top: 1.2mm;
+    color: #000;
+    font-weight: 500;
+    letter-spacing: 0.2pt;
+  }
+
+  /* 중앙: 핵심 가치 3가지 */
+  .values {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9mm;
+    border-top: 0.25mm solid #000;
+    border-bottom: 0.25mm solid #000;
+    padding: 1.8mm 0;
+  }
+  .values .row {
+    font-size: 7pt;
+    color: #000;
+    display: flex;
+    align-items: baseline;
+    gap: 1.5mm;
+    line-height: 1.2;
+  }
+  .values .row .check {
+    font-weight: 800;
+    font-size: 7.2pt;
+  }
+  .values .row b { font-weight: 700; }
+
+  /* 하단: 가격 & 브랜드 */
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .footer .price {
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: #000;
+    line-height: 1.25;
+  }
+  .footer .price .small {
+    font-size: 6pt;
+    font-weight: 500;
+    margin-top: 0.5mm;
+    display: block;
+  }
+  .footer .brand {
+    font-size: 9pt;
+    font-weight: 800;
+    letter-spacing: -0.3pt;
+    color: #000;
+    text-align: right;
+    line-height: 1;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- 상단: 슬로건 -->
+  <div class="tagline">
+    <div class="quote">매주 1시간 <span class="arrow">→</span> 1초</div>
+    <div class="sub">사무장이 직원 진행상황 파악하는 시간</div>
+  </div>
+
+  <!-- 중앙: 가치 3가지 -->
+  <div class="values">
+    <div class="row"><span class="check">✓</span> 직원별 사건 진행상황 <b>화면 1개</b>로</div>
+    <div class="row"><span class="check">✓</span> 마감일 임박 사건 <b>자동 상위 정렬</b></div>
+    <div class="row"><span class="check">✓</span> 요청 기능 <b>2~3일 내</b> 반영 (큰 SW 못 함)</div>
+  </div>
+
+  <!-- 하단: 가격 & 브랜드 -->
+  <div class="footer">
+    <div class="price">
+      월 165,000원
+      <span class="small">VAT 포함 · 약정 없음 · 매월 결제</span>
+    </div>
+    <div class="brand">CaseBoard</div>
+  </div>
+
+</div>
+</body>
+</html>

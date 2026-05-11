@@ -30,7 +30,9 @@ Supabase SQL Editor 에서 순서대로 실행:
 3. `supabase/migrations/0003_cases.sql` — cases + RLS + 헬퍼 함수
 4. `supabase/migrations/0004_case_fields.sql` — deadline, notes, DELETE RLS
 5. `supabase/migrations/0005_invites.sql` — 짧은 초대 코드 + 만료/회수
-6. `supabase/migrations/0006_audit.sql` — case_events 감사 로그 + 트리거
+6. `supabase/migrations/0006_audit.sql`
+7. `supabase/migrations/0007_fix_signup_trigger.sql`
+8. `supabase/migrations/0008_subscriptions.sql` — case_events 감사 로그 + 트리거
 
 ## 4. 실행
 
@@ -65,11 +67,39 @@ npm run dev
 - `/privacy`, `/terms` 페이지가 placeholder 로 들어 있습니다. **법무 검토 전** 배너 그대로 두지 마세요. 변호사 친구 본인 사무실에서 의뢰인 정보 다루는 SaaS 라 개인정보보호법 컴플라이언스가 1순위 영업 이슈로 들어옵니다.
 - 처리위탁(Supabase, Vercel)이 미국 소재라 국외이전 동의 절차 필요 여부 검토 필요.
 
-## 8. 미구현 (의도적으로 제외)
+## 8. 결제 운영 (수동 단계)
 
-- 결제 (Stripe/토스) — 무료 베타로 친구한테 깔아주고 피드백 받은 뒤
-- Supabase Pro 플랜 + PITR 백업 — 결제 결정과 묶임
-- SMTP 외부 연결 — Confirm email 켤 단계에서
+`/pricing` 공개 페이지에 ₩150,000/월 (VAT 별도) 표시. 가입하면 `subscriptions` 행이 자동 `pending` 상태로 생성됨. 대시보드 상단에 결제 안내 배너가 뜨고, admin 은 `/billing` 에서 계좌 정보 확인 후 입금.
+
+입금 확인 후 사장님이 SQL Editor 에서:
+
+```sql
+update public.subscriptions
+set status = 'active',
+    current_period_start = now(),
+    current_period_end = now() + interval '30 days',
+    last_paid_at = now()
+where office_id = '<해당 사무실 UUID>';
+```
+
+연체 처리 (period_end 지났을 때):
+
+```sql
+update public.subscriptions
+set status = 'overdue'
+where current_period_end < now() and status = 'active';
+```
+
+(추후 cron 으로 자동화)
+
+세금계산서는 매월 홈택스에서 수동 발행. 토스페이먼츠 연동 시 자동화 예정.
+
+## 9. 미구현
+
+- 토스페이먼츠 자동 결제 (가맹점 심사 후 추가)
+- 자동 세금계산서 발행
+- 연체 시 읽기 전용 모드 강제
+- SMTP 외부 연결 (Confirm email 켤 때)
 
 ## Vercel 배포
 

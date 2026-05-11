@@ -13,7 +13,7 @@ export default async function CaseEditPage({
   const supabase = createClient();
   const { data: c } = await supabase
     .from("cases")
-    .select("id, title, client_name, deadline, notes")
+    .select("id, title, client_name, case_no, deadline")
     .eq("id", params.id)
     .single();
 
@@ -57,6 +57,16 @@ export default async function CaseEditPage({
         </label>
 
         <label className="block">
+          <span className="text-sm font-medium">사건번호 (선택)</span>
+          <input
+            name="case_no"
+            defaultValue={c.case_no ?? ""}
+            placeholder="예: 2026가단12345"
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-900 focus:outline-none"
+          />
+        </label>
+
+        <label className="block">
           <span className="text-sm font-medium">마감일 (선택)</span>
           <input
             type="date"
@@ -66,15 +76,9 @@ export default async function CaseEditPage({
           />
         </label>
 
-        <label className="block">
-          <span className="text-sm font-medium">메모 (선택)</span>
-          <textarea
-            name="notes"
-            rows={5}
-            defaultValue={c.notes ?? ""}
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-900 focus:outline-none"
-          />
-        </label>
+        <p className="text-xs text-gray-500">
+          진행 메모는 케이스 상세 페이지의 "진행 메모" 섹션에서 추가하세요.
+        </p>
 
         {searchParams.error && (
           <p className="text-sm text-red-600">{searchParams.error}</p>

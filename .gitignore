@@ -8,3 +8,13 @@ out
 next-env.d.ts
 
 .vercel
+.env*.local
+.env.vercel*
+
+# local notes / scratch files
+demo.txt
+sales${f}.pdf
+
+# supabase CLI temp
+supabase/.temp/
+

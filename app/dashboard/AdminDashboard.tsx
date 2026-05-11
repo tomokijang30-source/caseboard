@@ -3,8 +3,12 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/login/actions";
 import { createInvite, revokeInvite } from "@/app/invites/actions";
+import { deleteCase } from "@/app/cases/actions";
 import { ConfirmButton } from "@/app/cases/ConfirmButton";
+import { StatusButtons } from "@/app/cases/StatusButtons";
 import { type CaseStatus, STATUS_LABEL, STATUS_PILL } from "./status";
+import { sortCasesByUrgency, staleDays, deadlineUrgency } from "./case-utils";
+import { HelpButton } from "./HelpButton";
 import {
   type DashboardSearchParams,
   StatusFilter,
@@ -16,9 +20,9 @@ type CaseRow = {
   id: string;
   title: string;
   client_name: string;
+  case_no: string | null;
   status: CaseStatus;
   deadline: string | null;
-  notes: string | null;
   updated_at: string;
   assigned_to: string;
 };
@@ -30,6 +34,10 @@ type Invite = {
   created_at: string;
   expires_at: string | null;
   revoked_at: string | null;
+};
+
+type Subscription = {
+  status: "pending" | "active" | "overdue" | "cancelled";
 };
 
 type CaseSnapshot = {
@@ -57,11 +65,13 @@ export async function AdminDashboard({
   userName,
   officeName,
   officeId,
+  isSuperAdmin,
   searchParams,
 }: {
   userName: string;
   officeName: string | null;
   officeId: string | null;
+  isSuperAdmin: boolean;
   searchParams: DashboardSearchParams;
 }) {
   const supabase = createClient();
@@ -71,6 +81,7 @@ export async function AdminDashboard({
     { data: casesRaw },
     { data: invitesRaw },
     { data: eventsRaw },
+    { data: subscription },
   ] = await Promise.all([
     supabase
       .from("users")
@@ -81,7 +92,7 @@ export async function AdminDashboard({
       .returns<StaffUser[]>(),
     supabase
       .from("cases")
-      .select("id, title, client_name, status, deadline, notes, updated_at, assigned_to")
+      .select("id, title, client_name, case_no, status, deadline, updated_at, assigned_to")
       .eq("office_id", officeId!)
       .order("updated_at", { ascending: false })
       .returns<CaseRow[]>(),
@@ -98,6 +109,11 @@ export async function AdminDashboard({
       .order("created_at", { ascending: false })
       .limit(20)
       .returns<Event[]>(),
+    supabase
+      .from("subscriptions")
+      .select("status")
+      .eq("office_id", officeId!)
+      .single<Subscription>(),
   ]);
 
   const staffUsers = staffUsersRaw ?? [];
@@ -120,12 +136,17 @@ export async function AdminDashboard({
   const matches = (c: CaseRow) => {
     if (statusFilter && c.status !== statusFilter) return false;
     if (staffFilter && c.assigned_to !== staffFilter) return false;
-    if (q && !c.title.toLowerCase().includes(q) && !c.client_name.toLowerCase().includes(q))
+    if (
+      q &&
+      !c.title.toLowerCase().includes(q) &&
+      !c.client_name.toLowerCase().includes(q) &&
+      !(c.case_no ?? "").toLowerCase().includes(q)
+    )
       return false;
     return true;
   };
 
-  const filteredCases = allCases.filter(matches);
+  const filteredCases = sortCasesByUrgency(allCases.filter(matches));
   const casesByStaffId = new Map<string, CaseRow[]>();
   for (const c of filteredCases) {
     const arr = casesByStaffId.get(c.assigned_to) ?? [];
@@ -146,15 +167,35 @@ export async function AdminDashboard({
             {userName}님 (대표){officeName ? ` · ${officeName}` : ""}
           </p>
         </div>
-        <form action={signOut}>
-          <button
-            type="submit"
+        <div className="flex items-center gap-2">
+          {isSuperAdmin && (
+            <Link
+              href="/admin/subscriptions"
+              className="rounded-md border border-purple-300 bg-purple-50 px-3 py-1.5 text-sm font-medium text-purple-900 hover:bg-purple-100"
+              title="슈퍼관리자 전용 — 전체 사무실 구독 관리"
+            >
+              구독 관리
+            </Link>
+          )}
+          <Link
+            href="/billing"
             className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium hover:bg-gray-50"
           >
-            로그아웃
-          </button>
-        </form>
+            결제
+          </Link>
+          <HelpButton />
+          <form action={signOut}>
+            <button
+              type="submit"
+              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium hover:bg-gray-50"
+            >
+              로그아웃
+            </button>
+          </form>
+        </div>
       </header>
+
+      <BillingBanner status={subscription?.status} />
 
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <SummaryCard label="총 케이스" value={counts.total} tone="neutral" />
@@ -193,7 +234,7 @@ export async function AdminDashboard({
           <input
             name="q"
             defaultValue={searchParams.q ?? ""}
-            placeholder="사건명/의뢰인 검색"
+            placeholder="사건명/의뢰인/사건번호 검색"
             className="min-w-[200px] flex-1 rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none"
           />
           <select
@@ -228,12 +269,25 @@ export async function AdminDashboard({
               const sCases = casesByStaffId.get(s.id) ?? [];
               const sWaiting = sCases.filter((c) => c.status === "waiting").length;
               return (
-                <div
+                <details
                   key={s.id}
-                  className="rounded-xl border border-gray-200 bg-white shadow-sm"
+                  open
+                  className="group rounded-xl border border-gray-200 bg-white shadow-sm"
                 >
-                  <div className="flex items-center justify-between border-b border-gray-100 px-5 py-3">
-                    <div className="text-sm font-medium text-gray-900">{s.name}</div>
+                  <summary className="flex cursor-pointer list-none items-center justify-between rounded-t-xl border-b border-gray-100 px-5 py-3 hover:bg-gray-50 [&::-webkit-details-marker]:hidden">
+                    <div className="flex items-center gap-2">
+                      <svg
+                        className="h-3.5 w-3.5 text-gray-400 transition-transform group-open:rotate-90"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path d="M7 5l6 5-6 5V5z" />
+                      </svg>
+                      <span className="text-base font-semibold text-gray-900">
+                        {s.name}
+                      </span>
+                    </div>
                     <div className="flex items-center gap-2 text-xs">
                       <span className="text-gray-500">총 {sCases.length}</span>
                       {sWaiting > 0 && (
@@ -242,7 +296,7 @@ export async function AdminDashboard({
                         </span>
                       )}
                     </div>
-                  </div>
+                  </summary>
 
                   {sCases.length === 0 ? (
                     <p className="px-5 py-6 text-center text-xs text-gray-400">
@@ -250,32 +304,72 @@ export async function AdminDashboard({
                     </p>
                   ) : (
                     <ul className="divide-y divide-gray-100">
-                      {sCases.map((c) => (
-                        <li key={c.id} className="px-5 py-3">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0">
-                              <div className="truncate text-sm text-gray-900">{c.title}</div>
-                              <div className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-gray-500">
-                                <span>의뢰인: {c.client_name}</span>
-                                {c.deadline && <span>마감: {c.deadline}</span>}
+                      {sCases.map((c) => {
+                        const stale = staleDays(c.updated_at, c.status);
+                        const urgency = deadlineUrgency(c.deadline, c.status);
+                        return (
+                          <li key={c.id} className="px-5 py-3">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <Link
+                                    href={`/cases/${c.id}`}
+                                    className="truncate text-sm font-medium text-gray-900 hover:underline"
+                                  >
+                                    {c.title}
+                                  </Link>
+                                  {c.case_no && (
+                                    <span className="font-mono text-[11px] text-gray-500">
+                                      {c.case_no}
+                                    </span>
+                                  )}
+                                  {urgency === "overdue" && (
+                                    <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-800 ring-1 ring-red-200">
+                                      마감 지남
+                                    </span>
+                                  )}
+                                  {urgency === "soon" && (
+                                    <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-semibold text-orange-800 ring-1 ring-orange-200">
+                                      마감 임박
+                                    </span>
+                                  )}
+                                  {stale !== null && (
+                                    <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700 ring-1 ring-amber-200">
+                                      {stale}일째 정체
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-gray-500">
+                                  <span>의뢰인: {c.client_name}</span>
+                                  {c.deadline && <span>마감: {c.deadline}</span>}
+                                </div>
                               </div>
+                              <StatusButtons caseId={c.id} current={c.status} />
                             </div>
-                            <span
-                              className={`shrink-0 rounded-md px-2.5 py-1 text-xs font-medium ${STATUS_PILL[c.status]}`}
-                            >
-                              {STATUS_LABEL[c.status]}
-                            </span>
-                          </div>
-                          {c.notes && (
-                            <p className="mt-2 line-clamp-2 whitespace-pre-wrap rounded-md bg-gray-50 px-3 py-2 text-xs text-gray-700">
-                              {c.notes}
-                            </p>
-                          )}
-                        </li>
-                      ))}
+                            <div className="mt-2 flex items-center gap-2 text-xs">
+                              <Link
+                                href={`/cases/${c.id}/edit`}
+                                className="rounded-md border border-gray-200 px-2.5 py-1 text-gray-600 hover:border-gray-400 hover:text-gray-900"
+                              >
+                                수정
+                              </Link>
+                              <form action={deleteCase}>
+                                <input type="hidden" name="case_id" value={c.id} />
+                                <ConfirmButton
+                                  type="submit"
+                                  message="이 케이스를 삭제하시겠습니까?"
+                                  className="rounded-md border border-gray-200 px-2.5 py-1 text-red-600 hover:border-red-300 hover:bg-red-50"
+                                >
+                                  삭제
+                                </ConfirmButton>
+                              </form>
+                            </div>
+                          </li>
+                        );
+                      })}
                     </ul>
                   )}
-                </div>
+                </details>
               );
             })}
           </div>
@@ -467,6 +561,46 @@ function ActivityFeed({ events }: { events: Event[] }) {
       </ul>
     </details>
   );
+}
+
+function BillingBanner({ status }: { status?: Subscription["status"] }) {
+  if (!status || status === "active") return null;
+
+  if (status === "pending") {
+    return (
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+        <div>
+          <strong>결제 대기 중</strong> — 첫 달 입금 후 정식 활성화됩니다.
+        </div>
+        <Link href="/billing" className="font-medium underline">
+          결제 안내 →
+        </Link>
+      </div>
+    );
+  }
+
+  if (status === "overdue") {
+    return (
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border-2 border-red-300 bg-red-50 px-4 py-3 text-sm text-red-900">
+        <div>
+          <strong>결제 연체</strong> — 즉시 입금하지 않으면 읽기 전용으로 전환될 수 있습니다.
+        </div>
+        <Link href="/billing" className="font-medium underline">
+          결제 안내 →
+        </Link>
+      </div>
+    );
+  }
+
+  if (status === "cancelled") {
+    return (
+      <div className="rounded-md border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-700">
+        구독이 해지된 사무실입니다.
+      </div>
+    );
+  }
+
+  return null;
 }
 
 function SummaryCard({

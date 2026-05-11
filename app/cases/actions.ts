@@ -41,7 +41,7 @@ export async function updateCase(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   const client_name = String(formData.get("client_name") ?? "").trim();
   const deadlineRaw = String(formData.get("deadline") ?? "").trim();
-  const notesRaw = String(formData.get("notes") ?? "").trim();
+  const caseNoRaw = String(formData.get("case_no") ?? "").trim();
 
   if (!id || !title || !client_name) {
     redirect(`/cases/${id}/edit?error=${encodeURIComponent("사건명과 의뢰인은 필수입니다.")}`);
@@ -53,8 +53,8 @@ export async function updateCase(formData: FormData) {
     .update({
       title,
       client_name,
+      case_no: caseNoRaw === "" ? null : caseNoRaw,
       deadline: deadlineRaw === "" ? null : deadlineRaw,
-      notes: notesRaw === "" ? null : notesRaw,
     })
     .eq("id", id);
 
@@ -64,6 +64,19 @@ export async function updateCase(formData: FormData) {
 
   revalidatePath("/dashboard");
   redirect("/dashboard");
+}
+
+export async function addCaseNote(formData: FormData) {
+  const case_id = String(formData.get("case_id") ?? "");
+  const body = String(formData.get("body") ?? "").trim();
+  if (!case_id || !body) return;
+
+  const supabase = createClient();
+  const { error } = await supabase.from("case_notes").insert({ case_id, body });
+  if (error) console.error("addCaseNote failed:", error.message);
+
+  revalidatePath(`/cases/${case_id}`);
+  revalidatePath("/dashboard");
 }
 
 export async function deleteCase(formData: FormData) {

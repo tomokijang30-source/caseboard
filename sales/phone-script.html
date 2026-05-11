@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>CaseBoard 콜드콜 시나리오</title>
+<style>
+  @page { size: A4; margin: 8mm 10mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Malgun Gothic", "맑은 고딕", -apple-system, sans-serif;
+    font-size: 9.2pt;
+    line-height: 1.35;
+    color: #111;
+    margin: 0;
+    padding: 0;
+  }
+  h1 {
+    font-size: 13pt;
+    margin: 0 0 4px;
+    border-bottom: 2px solid #111;
+    padding-bottom: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  h1 small { font-size: 8pt; font-weight: normal; color: #555; }
+  h2 {
+    font-size: 9.5pt;
+    margin: 7px 0 3px;
+    background: #111;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+  .row { display: flex; gap: 8px; margin-top: 4px; }
+  .col { flex: 1; }
+  .quote {
+    background: #fff8dc;
+    border-left: 3px solid #d4a017;
+    padding: 4px 7px;
+    margin: 3px 0;
+    font-weight: 500;
+  }
+  .you { color: #0a5cab; }
+  .other { color: #666; font-style: italic; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 3px;
+    font-size: 8.6pt;
+  }
+  th, td {
+    border: 1px solid #bbb;
+    padding: 3px 5px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: #eee; font-size: 8.4pt; }
+  td.who { width: 30%; font-weight: 600; }
+  ul { margin: 2px 0 2px 16px; padding: 0; }
+  li { margin-bottom: 1px; }
+  .tip-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 12px;
+    font-size: 8.6pt;
+  }
+  .tip-grid div { padding-left: 10px; text-indent: -10px; }
+  .pill {
+    display: inline-block;
+    background: #e9eef7;
+    color: #0a5cab;
+    padding: 0 5px;
+    border-radius: 8px;
+    font-size: 8pt;
+    margin-right: 3px;
+  }
+  .footer {
+    margin-top: 6px;
+    padding-top: 4px;
+    border-top: 1px dashed #999;
+    font-size: 8pt;
+    color: #555;
+    display: flex;
+    justify-content: space-between;
+  }
+  .danger { color: #b00020; font-weight: 600; }
+  .ok { color: #0a8043; font-weight: 600; }
+  @media print {
+    body { font-size: 9pt; }
+  }
+</style>
+</head>
+<body>
+
+<h1>CaseBoard 콜드콜 시나리오 <small>월 165,000원 · 약정 없음 · 기능 요청 빠르면 2~3일, 느려도 1주일 내 반영</small></h1>
+
+<div class="row">
+  <div class="col" style="flex: 1.2;">
+
+    <h2>① 직원이 받음 (gatekeeper)</h2>
+    <div class="other">"법무법인 OO입니다."</div>
+    <div class="quote you">"안녕하세요, <b>사무장님 통화 가능하실까요?</b> 변호사 사무실 사건 관리 프로그램 관련해서 1분만 설명드릴 게 있어서요."</div>
+    <ul>
+      <li>"잠시만요" → ② 진입</li>
+      <li>"안 계세요" → "보통 몇 시쯤 통화 가능하실까요?" + 시간 박기</li>
+      <li>"무슨 일이세요?" → 위 멘트 그대로 다시</li>
+      <li>"메일 보내주세요" → "네, 다만 1분만 통화하시면 메일 안 보셔도 되는데요. 오후에 가능 시간 있으세요?"</li>
+    </ul>
+
+    <h2>② 사무장/대표 받음 — 페인 질문</h2>
+    <div class="quote you">"안녕하세요 사무장님, 통화 감사합니다.<br>혹시 사무실에 변호사+직원 합쳐 몇 분 계세요?"</div>
+    <div class="other">"5명요" / "10명입니다"</div>
+    <div class="quote you">"아 그럼 직원분들 사건 진행상황 파악하실 때 보통 어떻게 보세요? 엑셀? 카톡? 다른 프로그램?"</div>
+
+    <h2>③ 공감 + 솔루션 한 줄</h2>
+    <div class="other">엑셀/카톡 답변 시:</div>
+    <div class="quote you">"네 많이들 그러시는데, 직원 5명 넘으면 누가 마지막에 수정했는지, 어떤 사건이 며칠째 멈춰있는지 한눈에 보기 어려우시죠? 저희 프로그램은 화면 1개로 그걸 다 보여드립니다."</div>
+    <div class="other">케이스노트 등 SW 답변 시:</div>
+    <div class="quote you">"좋은 SW 쓰시네요. 혹시 새 기능 요청해도 답이 늦거나 가격 부담은 없으세요? 저희는 원하시는 기능 <b>빠르면 2~3일, 느려도 1주일</b> 안에 추가, 가격 165,000원 고정입니다."</div>
+
+    <h2>④ 미팅 약속 (가장 중요)</h2>
+    <div class="quote you">"월 165,000원이고 <b>약정 없이 매월 결제</b>입니다. 별로면 다음 달부터 안 내시면 끝나요. 전화로 듣는 것보다 5분만 화면 보시면 훨씬 빠르거든요. 사무실 한 번 들러도 될까요? <b>이번 주 화·수·목 중 오후 2시나 3시</b>요."</div>
+
+    <h2>⑤ 잡혔을 때 마무리</h2>
+    <div class="quote you">"감사합니다, 수요일 오후 2시 들르겠습니다. 주소가 OOO 맞으세요? 5분 안에 끝내고 갑니다. 사무장님 함자 한 번만 더 여쭤봐도 될까요?"</div>
+
+  </div>
+
+  <div class="col">
+
+    <h2>거절 응대 8 (그대로 외워)</h2>
+    <table>
+      <tr><th class="who">상대</th><th>너</th></tr>
+      <tr><td class="who">관심 없어요</td><td>혹시 지금 사건 관리 어떻게 하시는지만 한 번 여쭤봐도 될까요?</td></tr>
+      <tr><td class="who">엑셀로 잘 써요</td><td>5명 넘으면 마지막 수정자 헷갈릴 때 있으시죠? 5분만 보시면 차이 바로 보세요.</td></tr>
+      <tr><td class="who">메일 보내세요</td><td>보내드릴게요. 다만 화요일에 5분만 들러서 자료 같이 보면 어떠세요?</td></tr>
+      <tr><td class="who">지금 바빠요</td><td>다음 주 화·수·목 중 5분만 들러도 될까요?</td></tr>
+      <tr><td class="who">필요 없어요</td><td>나중에라도 5명 넘으시면 연락처 남겨드릴까요?</td></tr>
+      <tr><td class="who">비싸요</td><td>직원 한 분 1주 인건비예요. 사무실 전체가 1년 사용합니다.</td></tr>
+      <tr><td class="who">보안 걱정</td><td>한국 서버 암호화 저장, 의뢰인 실명 안 적어도 운영 가능합니다.</td></tr>
+      <tr><td class="who">우린 작아요</td><td>몇 분이세요? 5명 미만이시면 늘어나실 때 다시 연락드려도 될까요?</td></tr>
+    </table>
+
+    <h2>음성 가이드</h2>
+    <div class="tip-grid">
+      <div><b>속도</b>: 평소보다 약간 천천히</div>
+      <div><b>톤</b>: 약간 낮게, 안정적</div>
+      <div><b>크기</b>: 평소 +10%</div>
+      <div><b>자세</b>: <span class="ok">서서</span> 통화</div>
+      <div><b>표정</b>: 살짝 미소</div>
+      <div><b>강조</b>: <b>1분만</b>, <b>약정없음</b>, <b>5분</b></div>
+    </div>
+
+    <h2>전화 시간대</h2>
+    <table>
+      <tr><th>시간</th><th>판단</th></tr>
+      <tr><td>09:00~10:00</td><td>직원 출근 정리, <span class="ok">연결 잘 됨</span></td></tr>
+      <tr><td>10:00~11:30</td><td>사무장 외근/회의 가능성</td></tr>
+      <tr><td>11:30~13:00</td><td><span class="danger">점심, 짜증날 수도</span></td></tr>
+      <tr><td><b>14:00~15:30</b></td><td><span class="ok">골든타임 — 5~10통 몰아치기</span></td></tr>
+      <tr><td>15:30~17:00</td><td>외근/방문상담</td></tr>
+      <tr><td>17:00~18:00</td><td><span class="danger">마감 모드, 짜증</span></td></tr>
+    </table>
+
+    <h2>절대 안 됨</h2>
+    <ul style="font-size:8.6pt;">
+      <li class="danger">"사장님 친구입니다" 거짓말</li>
+      <li class="danger">"5분만요!" 매달리기</li>
+      <li class="danger">개인 번호 요구</li>
+      <li class="danger">"안 받으시면 손해" 협박조</li>
+    </ul>
+
+    <h2>1순위 타겟</h2>
+    <div style="font-size:8.6pt;">
+      <span class="pill">가사/이혼</span>
+      <span class="pill">교통사고</span>
+      <span class="pill">개인회생/파산</span><br>
+      <span class="pill">부동산</span>
+      <span class="pill">변호사 2~5명</span>
+      <span class="pill">대표 30~50대</span>
+    </div>
+
+    <h2>오늘 목표</h2>
+    <div style="font-size:8.8pt;">
+      10통 시도 → 2~3통 결정권자 연결 → <b>1건 미팅</b><br>
+      <span style="color:#555;">거절 8번이 정상. 거절 = 데이터, 너 부정 아님.</span>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  <span>CaseBoard · 장유승 · 010-7647-1312 · caseboard443@gmail.com</span>
+  <span>v1 · 인쇄 후 책상 옆에 두고 통화</span>
+</div>
+
+</body>
+</html>

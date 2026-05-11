@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>CaseBoard 미팅 영업 시나리오</title>
+<style>
+  @page { size: A4; margin: 8mm 9mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Malgun Gothic", "맑은 고딕", -apple-system, sans-serif;
+    font-size: 9pt;
+    line-height: 1.32;
+    color: #111;
+    margin: 0;
+  }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  h1 {
+    font-size: 13pt;
+    margin: 0 0 4px;
+    border-bottom: 2px solid #111;
+    padding-bottom: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  h1 small { font-size: 8pt; font-weight: normal; color: #555; }
+  h2 {
+    font-size: 9.5pt;
+    margin: 6px 0 3px;
+    background: #111;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+  h3 {
+    font-size: 9pt;
+    margin: 5px 0 2px;
+    color: #0a5cab;
+    border-left: 3px solid #0a5cab;
+    padding-left: 5px;
+  }
+  .row { display: flex; gap: 8px; }
+  .col { flex: 1; }
+  .quote {
+    background: #fff8dc;
+    border-left: 3px solid #d4a017;
+    padding: 4px 7px;
+    margin: 3px 0;
+    font-weight: 500;
+  }
+  .you { color: #0a5cab; }
+  .other { color: #666; font-style: italic; font-size: 8.6pt; }
+  .stage { font-weight: 700; color: #b00020; font-size: 8.6pt; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 3px;
+    font-size: 8.5pt;
+  }
+  th, td {
+    border: 1px solid #bbb;
+    padding: 3px 5px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: #eee; font-size: 8.4pt; }
+  td.who { width: 30%; font-weight: 600; }
+  ul { margin: 2px 0 2px 16px; padding: 0; }
+  li { margin-bottom: 1px; }
+  .check li { list-style: none; margin-left: -10px; }
+  .check li::before { content: "☐ "; color: #888; }
+  .danger { color: #b00020; font-weight: 600; }
+  .ok { color: #0a8043; font-weight: 600; }
+  .pill {
+    display: inline-block;
+    background: #e9eef7;
+    color: #0a5cab;
+    padding: 0 5px;
+    border-radius: 8px;
+    font-size: 8pt;
+  }
+  .footer {
+    margin-top: 5px;
+    padding-top: 3px;
+    border-top: 1px dashed #999;
+    font-size: 8pt;
+    color: #555;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<!-- ====================== PAGE 1: 5분 미팅 스크립트 (외우기) ====================== -->
+<div class="page">
+
+<h1>CaseBoard 5분 미팅 스크립트 <small>월 165,000원 · 약정 없음 · 기능 요청 빠르면 2~3일, 느려도 1주일 내 반영 · 시계 켜고 시작</small></h1>
+
+<div class="row">
+<div class="col">
+
+  <h2>① 도착 ~ 0:30 — 인사 + 시간 약속</h2>
+  <div class="quote you">"안녕하세요 사무장님, <b>장유승</b>입니다. 약속드린 대로 <b>5분만</b> 시간 빌리겠습니다.<br>제 시계 켜놓고 시작하겠습니다 — (시계/타이머 켜는 동작 보여주기). 끝나면 자리 뜨겠습니다."</div>
+  <div class="other">→ 명함 1장 테이블 위에 올려둠. 노트북 펴고 화면 미리 로그인된 상태로.</div>
+
+  <h2>② 0:30 ~ 1:30 — 페인 질문 3개 (메모하면서 듣기)</h2>
+  <div class="quote you">"본격 보여드리기 전에 3가지만 여쭙겠습니다."</div>
+  <ol style="margin-top:3px; padding-left:20px;">
+    <li>"지금 진행 중인 사건이 몇 건 정도 되세요?"</li>
+    <li>"직원분들 사건 진행상황은 어떻게 파악하세요? 엑셀? 카톡? 다른 거?"</li>
+    <li>"그거 매주 보시는 데 시간이 얼마나 드세요? 1시간? 2시간?"</li>
+  </ol>
+  <div class="other">→ 답을 종이/노트북에 메모. 수치는 그대로 받아적기. <b>이 답들이 다음 멘트의 무기.</b></div>
+
+  <h2>③ 1:30 ~ 3:00 — 화면 1 (관리자 대시보드)</h2>
+  <div class="other">노트북 돌려서 보여주기. 마우스는 천천히.</div>
+  <div class="quote you">"보여드릴 화면은 단 1개입니다. 이거 하나면 됩니다."<br>
+  (대시보드 띄움)<br>
+  "지금 사무장님이 매주 (들었던 시간) 걸리시는 게, 여기서 <b>1초</b>입니다. 이 줄이 직원 (들었던 인원)명, 각자 사건이 다 펼쳐져 있죠.<br>
+  대기중은 노란색, 진행중 파란색, 완료 초록색입니다.<br>
+  마감 임박한 사건은 자동으로 위로 올라옵니다."</div>
+  <div class="quote you">(케이스 펼쳐서 보여줌)<br>"클릭 한 번 하면 그 직원이 잡고 있는 사건이 다 보여요. <b>며칠째 멈춰 있는지</b>도 한눈에요."</div>
+  <div class="quote you">(활동 피드 가리키며)<br>"누가 뭘 바꿨는지 자동으로 기록됩니다. 직원이 사건 상태 바꾸면 사장님 화면에 바로 뜹니다."</div>
+
+  <h2>④ 3:00 ~ 4:00 — 화면 2 (직원 화면, 빠르게)</h2>
+  <div class="quote you">"직원분들 입장도 잠깐 보여드리면, 이렇게 본인 사건만 보입니다. 상태는 버튼 한 번 클릭. <b>새로 배울 거 없습니다. 카톡 쓸 줄 아시면 다 쓰세요.</b><br>
+  직원 가입은 초대 코드 1개 만들어서 단톡방에 뿌리시면 5초 만에 다 들어옵니다."</div>
+
+</div>
+<div class="col">
+
+  <h2>⑤ 4:00 ~ 5:00 — 가격 + 차별점 + 즉석 가입 (가장 중요)</h2>
+  <div class="quote you"><b>월 165,000원입니다 (VAT 포함)</b>. 케이스노트보다 저렴하고 인원수 상관없이 고정입니다."</div>
+  <div class="quote you">"큰 솔루션과 차이는 두 가지예요.<br>
+  <b>첫째</b>, 사장님이 원하시는 기능 말씀하시면 <b>빠르면 2~3일, 느려도 1주일</b> 안에 만들어드립니다. 큰 회사는 절대 안 해줍니다.<br>
+  <b>둘째</b>, <b>약정 없이 매월 결제</b>입니다. 별로면 다음 달부터 안 내시면 끝나요. 부담 없이 시작 가능합니다."</div>
+
+  <h3>★ 즉석 가입 클로징 (이거 안 하면 70% 죽음)</h3>
+  <div class="quote you">"지금 이메일이랑 사무실 이름만 알려주시면 <b>5분 안에 계정 만들어드립니다</b>. 오늘 바로 직원분들 초대 코드까지 드릴 수 있어요. 한번 깔아드릴까요?"</div>
+  <div class="other">→ 기다리지 말고 바로 노트북 회원가입 화면 띄우기. 행동 = 시그널. "생각해보고 연락드릴게요" 들으면 70% 사라짐.</div>
+
+  <h2>★ 가격 망설이면 — Special Offer 던지기</h2>
+  <div class="quote you">"사장님, 솔직히 말씀드리면 저 첫 고객 모시려고 합니다. <b>첫 6개월 50% 할인</b> 드릴게요 — 한 달 82,500원입니다. 대신 두 가지만 부탁드려도 될까요?<br>
+  ① 쓰시면서 좋은 점/불편한 점 한 달에 한 번만 말씀해주시기<br>
+  ② 비슷한 규모 변호사 사무실 1곳만 소개해주시기<br>
+  이 조건이면 어떠세요?"</div>
+  <div class="other">→ 이 오퍼면 거의 들어옴. 너는 case study + referral + 첫 매출 다 잡음.</div>
+
+  <h2>⑥ 마무리 (가입 성공 / 실패 둘 다)</h2>
+  <h3>✅ 가입했음</h3>
+  <div class="quote you">"감사합니다. 오늘 5분 약속 지켰죠? (웃음) 사용 중 궁금한 거 있으시면 카톡으로 편하게 주세요. 1시간 안에 답 드립니다.<br>
+  3일 후 한번 더 들러서 잘 쓰시는지 확인 갈게요."</div>
+
+  <h3>⏸ 보류 / 더 생각해보고</h3>
+  <div class="quote you">"네 알겠습니다. 그럼 <b>다음 주 화/수 중</b>에 다시 들러서 결정 도와드려도 될까요? 이번 주 안 쓰셔도 자료는 두고 가겠습니다."</div>
+  <div class="other">→ 다음 약속 박지 못하면 80% 죽음. <b>막연한 "나중에"는 받지 말 것.</b></div>
+
+  <h3>❌ 거절</h3>
+  <div class="quote you">"네 시간 내주셔서 감사합니다. 혹시 나중에 직원이 더 늘거나 필요하실 때 연락처 남겨드릴까요?"</div>
+  <div class="other">→ 이메일이라도 받으면 1주 후 follow-up 가능.</div>
+
+  <h2>🎯 5분 안에 무조건 해야 할 5가지</h2>
+  <ul style="font-size:8.6pt;">
+    <li>① 페인 질문 3개 답변 받기</li>
+    <li>② 관리자 대시보드 1개 화면 보여주기</li>
+    <li>③ 가격 직접 말하기 (165,000원)</li>
+    <li>④ "약정 없음 · 매월 결제" 강조</li>
+    <li>⑤ <b>즉석 가입 권유</b> (이메일 받기)</li>
+  </ul>
+
+</div>
+</div>
+
+<div class="footer">
+  <span>CaseBoard · 장유승 · 010-7647-1312 · caseboard443@gmail.com · Page 1/2 (앞면)</span>
+  <span>5분 안에 끝내고 나오기. 시계 약속 지키면 다음 영업도 신뢰 ↑</span>
+</div>
+
+</div>
+
+<!-- ====================== PAGE 2: 사전 준비 + 거절 응대 + 후속 ====================== -->
+<div class="page">
+
+<h1>미팅 사전준비 + 거절 응대 + 후속 액션 <small>막힐 때 펴보는 백업</small></h1>
+
+<div class="row">
+<div class="col">
+
+  <h2>출발 전 체크리스트</h2>
+  <ul class="check" style="font-size:8.6pt;">
+    <li>노트북 충전 100% + 핫스팟 백업</li>
+    <li>CaseBoard 슈퍼관리자 계정 미리 로그인 → 관리자 대시보드 띄워둠</li>
+    <li>데모 데이터: 가짜 사건 8~10건 + 직원 4~5명 미리 입력</li>
+    <li>명함 5장 (지갑+가방 분산)</li>
+    <li>A4 요약지 1장 (가격/기능/연락처 — 두고 옴)</li>
+    <li>사무실 주소 다시 확인 (틀린 사무실 가면 끝)</li>
+    <li>도착 5분 전 도착, 3분 전 입장</li>
+    <li>화장실/거울에서 셔츠/머리 점검</li>
+    <li>핸드폰 무음 (진동도 X)</li>
+  </ul>
+
+  <h2>옷차림</h2>
+  <div style="font-size:8.6pt;">
+    <span class="ok">✓</span> 셔츠 + 슬랙스 (변호사보다 약간 낮게)<br>
+    <span class="ok">✓</span> 신발 깨끗하게<br>
+    <span class="danger">✗</span> 정장 = 어색 / 후드티 = 신뢰 ↓
+  </div>
+
+  <h2>거절 응대 8 (대면용)</h2>
+  <table>
+    <tr><th class="who">상대</th><th>너</th></tr>
+    <tr><td class="who">"비싸요"</td><td>"직원 한 분 1주 인건비입니다. <b>50% 할인</b> 6개월 가능합니다 — 82,500원."</td></tr>
+    <tr><td class="who">"보안 걱정"</td><td>"한국 서버, 암호화. 의뢰인 실명 안 적으셔도 운영 가능. 사건번호+이니셜로 충분합니다."</td></tr>
+    <tr><td class="who">"케이스노트 쓰는데"</td><td>"어떤 점이 불편하세요? ... 저희는 그 부분 빠르면 2~3일, 느려도 1주일 안에 만들어드립니다."</td></tr>
+    <tr><td class="who">"엑셀로 충분"</td><td>"5명 넘으면 마지막 수정자 헷갈리실 거예요. 약정 없으니 한 달만 써보시고 결정하세요."</td></tr>
+    <tr><td class="who">"직원이 안 쓸 거"</td><td>"카톡보다 쉽습니다. 직원분들도 본인 사건만 보면 되니까 5분이면 적응합니다."</td></tr>
+    <tr><td class="who">"기존 데이터 옮기기 힘들"</td><td>"엑셀 보내주시면 제가 직접 옮겨드립니다. 무료입니다."</td></tr>
+    <tr><td class="who">"생각 좀 해볼게요"</td><td>"네, <b>다음 주 화 오후 2시</b>에 다시 들러도 될까요? 그때 결정 도와드릴게요."</td></tr>
+    <tr><td class="who">"대표님께 물어볼게요"</td><td>"네 그럼 대표님 함께 5분만 더 시간 가능하실까요? 지금 안 되시면 다음 주 약속 잡고 싶습니다."</td></tr>
+  </table>
+
+  <h2>절대 안 됨 (현장)</h2>
+  <ul style="font-size:8.6pt;">
+    <li class="danger">5분 넘기기 (약속 깨면 신뢰 끝)</li>
+    <li class="danger">"이거 진짜 좋아요!" 자화자찬</li>
+    <li class="danger">경쟁사 비방 ("케이스노트 별로예요" X)</li>
+    <li class="danger">스펙/기술 자랑 (Supabase, Next.js 같은 단어)</li>
+    <li class="danger">"제가 만든 거예요" 강조 = 외주 의심받음</li>
+    <li class="danger">긴 문서/계약서 들이밀기</li>
+    <li class="danger">즉석 가입 권유 안 하고 그냥 나오기</li>
+  </ul>
+
+</div>
+<div class="col">
+
+  <h2>미팅 후 후속 액션</h2>
+
+  <h3>당일 저녁 (24시간 내)</h3>
+  <div style="font-size:8.6pt;">
+    <b>가입 성공:</b><br>
+    카톡: "오늘 시간 내주셔서 감사합니다. 사용 중 궁금한 거 카톡으로 편하게 주세요. 빠르게 답 드립니다."<br><br>
+    <b>보류/거절:</b><br>
+    이메일: "오늘 만나주셔서 감사합니다. 결정에 도움 되시라고 자료 첨부합니다. (요약지 PDF 첨부) — 장유승"
+  </div>
+
+  <h3>3일 후</h3>
+  <div style="font-size:8.6pt;">
+    <b>가입 성공:</b> "첫 며칠 쓰시면서 어떠세요? 불편한 점 있으세요?" → 답 들으면 그날 저녁 안에 수정/추가
+  </div>
+
+  <h3>1주일 후</h3>
+  <div style="font-size:8.6pt;">
+    <b>가입 성공:</b> "추가하면 좋을 기능 있으세요?" → 진짜로 2~3일 안에 만들어주기 = 평생 고객<br>
+    <b>보류:</b> "지난 주 보여드린 거 어떠셨어요? 한 번 더 들러도 될까요?"
+  </div>
+
+  <h3>2주일 후</h3>
+  <div style="font-size:8.6pt;">
+    <b>가입 성공:</b> "혹시 비슷한 사무실 한 곳만 소개해주실 수 있을까요?" (referral 부탁)<br>
+    <b>보류 → 답 없음:</b> 그만. 매달리면 평판 깎임.
+  </div>
+
+  <h2>5분 데모 — 화면별 핵심 멘트</h2>
+  <table>
+    <tr><th>화면</th><th>한 줄 멘트</th></tr>
+    <tr><td>관리자 대시보드</td><td>"매주 1시간 → 1초"</td></tr>
+    <tr><td>직원별 케이스 그룹</td><td>"누가 일 많고 누가 비어있는지"</td></tr>
+    <tr><td>상태 (대기/진행/완료)</td><td>"카톡처럼 버튼 한 번"</td></tr>
+    <tr><td>마감일</td><td>"임박한 거 자동으로 위로"</td></tr>
+    <tr><td>활동 피드</td><td>"누가 뭘 바꿨는지 자동 기록"</td></tr>
+    <tr><td>직원 초대 코드</td><td>"단톡방에 코드 1개 = 다 들어옴"</td></tr>
+    <tr><td>검색</td><td>"사건명/의뢰인 즉시 검색"</td></tr>
+  </table>
+
+  <h2>마인드셋 (들어가기 전 1번 읽기)</h2>
+  <ul style="font-size:8.7pt;">
+    <li><b>너는 도움 주러 간 사람이지, 부탁하러 간 사람이 아니다.</b></li>
+    <li>긴장은 정상. 5분 안 끝낸다 생각하면 더 떨림. <b>5분 약속 = 너도 자유.</b></li>
+    <li>거절당해도 평판 깎이지 않음 — <b>약속 어기는 게</b> 깎임. 5분 지키면 다음 주 다시 가도 됨.</li>
+    <li>첫 미팅에서 가입 안 받아도 정상. <b>다음 약속 잡고 나오는 게 진짜 성공.</b></li>
+    <li>너 제품을 너가 가장 잘 안다. 변호사가 더 모름. <b>주눅들 이유 없음.</b></li>
+  </ul>
+
+  <h2>현장에서 잊지 말 것 한 줄씩</h2>
+  <div style="font-size:8.7pt; background:#f4f4f4; padding:6px; border-radius:3px;">
+    ⏱ <b>시계 켜기</b> · 메모하며 듣기 · 화면은 1개만 · "2~3일 내 기능 반영" 강조 · <b>즉석 가입 권유</b> · 5분 안에 일어서기 · 다음 약속 박기
+  </div>
+
+</div>
+</div>
+
+<div class="footer">
+  <span>CaseBoard · 장유승 · 010-7647-1312 · caseboard443@gmail.com · Page 2/2 (뒷면)</span>
+  <span>거절 = 데이터 · 미팅 1건 잡힌 것만으로도 오늘 영업 성공</span>
+</div>
+
+</div>
+
+</body>
+</html>

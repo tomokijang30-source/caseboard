@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/login/actions";
-import { createCase, deleteCase, updateCaseStatus } from "@/app/cases/actions";
+import { createCase, deleteCase } from "@/app/cases/actions";
 import { ConfirmButton } from "@/app/cases/ConfirmButton";
-import { type CaseStatus, STATUSES, STATUS_LABEL, STATUS_PILL } from "./status";
+import { StatusButtons } from "@/app/cases/StatusButtons";
+import { type CaseStatus, STATUS_LABEL } from "./status";
+import { sortCasesByUrgency, staleDays, deadlineUrgency } from "./case-utils";
+import { HelpButton } from "./HelpButton";
 import {
   type DashboardSearchParams,
   StatusFilter,
@@ -14,9 +17,9 @@ type CaseRow = {
   id: string;
   title: string;
   client_name: string;
+  case_no: string | null;
   status: CaseStatus;
   deadline: string | null;
-  notes: string | null;
   updated_at: string;
 };
 
@@ -34,12 +37,12 @@ export async function StaffDashboard({
   const supabase = createClient();
   const { data: cases } = await supabase
     .from("cases")
-    .select("id, title, client_name, status, deadline, notes, updated_at")
+    .select("id, title, client_name, case_no, status, deadline, updated_at")
     .eq("assigned_to", userId)
     .order("updated_at", { ascending: false })
     .returns<CaseRow[]>();
 
-  const all = cases ?? [];
+  const all = sortCasesByUrgency(cases ?? []);
   const counts: Record<"total" | CaseStatus, number> = {
     total: all.length,
     ongoing: all.filter((c) => c.status === "ongoing").length,
@@ -59,14 +62,17 @@ export async function StaffDashboard({
             {userName}님 (직원){officeName ? ` · ${officeName}` : ""}
           </p>
         </div>
-        <form action={signOut}>
-          <button
-            type="submit"
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium hover:bg-gray-50"
-          >
-            로그아웃
-          </button>
-        </form>
+        <div className="flex items-center gap-2">
+          <HelpButton />
+          <form action={signOut}>
+            <button
+              type="submit"
+              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium hover:bg-gray-50"
+            >
+              로그아웃
+            </button>
+          </form>
+        </div>
       </header>
 
       <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -95,7 +101,7 @@ export async function StaffDashboard({
           </button>
         </form>
         <p className="mt-2 text-xs text-gray-500">
-          등록 후 카드에서 마감일·메모를 추가하세요.
+          등록 후 사건 클릭 → 마감일 수정 · 진행 메모 작성.
         </p>
       </section>
 
@@ -110,15 +116,43 @@ export async function StaffDashboard({
           </div>
         ) : (
           <ul className="space-y-3">
-            {list.map((c) => (
+            {list.map((c) => {
+              const stale = staleDays(c.updated_at, c.status);
+              const urgency = deadlineUrgency(c.deadline, c.status);
+              return (
               <li
                 key={c.id}
                 className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
-                    <div className="truncate text-sm font-medium text-gray-900">
-                      {c.title}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Link
+                        href={`/cases/${c.id}`}
+                        className="truncate text-sm font-medium text-gray-900 hover:underline"
+                      >
+                        {c.title}
+                      </Link>
+                      {c.case_no && (
+                        <span className="font-mono text-[11px] text-gray-500">
+                          {c.case_no}
+                        </span>
+                      )}
+                      {urgency === "overdue" && (
+                        <span className="rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-800 ring-1 ring-red-200">
+                          마감 지남
+                        </span>
+                      )}
+                      {urgency === "soon" && (
+                        <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-semibold text-orange-800 ring-1 ring-orange-200">
+                          마감 임박
+                        </span>
+                      )}
+                      {stale !== null && (
+                        <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700 ring-1 ring-amber-200">
+                          {stale}일째 정체
+                        </span>
+                      )}
                     </div>
                     <div className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-gray-500">
                       <span>의뢰인: {c.client_name}</span>
@@ -126,37 +160,8 @@ export async function StaffDashboard({
                     </div>
                   </div>
 
-                  <form
-                    action={updateCaseStatus}
-                    className="flex shrink-0 items-center gap-1"
-                  >
-                    <input type="hidden" name="case_id" value={c.id} />
-                    {STATUSES.map((s) => {
-                      const active = c.status === s;
-                      return (
-                        <button
-                          key={s}
-                          type="submit"
-                          name="status"
-                          value={s}
-                          className={
-                            active
-                              ? `rounded-md px-2.5 py-1 text-xs font-medium ${STATUS_PILL[s]}`
-                              : "rounded-md border border-gray-200 px-2.5 py-1 text-xs text-gray-500 hover:border-gray-400 hover:text-gray-900"
-                          }
-                        >
-                          {STATUS_LABEL[s]}
-                        </button>
-                      );
-                    })}
-                  </form>
+                  <StatusButtons caseId={c.id} current={c.status} />
                 </div>
-
-                {c.notes && (
-                  <p className="mt-3 whitespace-pre-wrap rounded-md bg-gray-50 px-3 py-2 text-xs text-gray-700">
-                    {c.notes}
-                  </p>
-                )}
 
                 <div className="mt-3 flex items-center gap-2 text-xs">
                   <Link
@@ -177,7 +182,8 @@ export async function StaffDashboard({
                   </form>
                 </div>
               </li>
-            ))}
+              );
+            })}
           </ul>
         )}
       </section>

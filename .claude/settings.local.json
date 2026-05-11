@@ -2,7 +2,34 @@
   "permissions": {
     "allow": [
       "Bash(npm install *)",
-      "Bash(npm audit *)"
+      "Bash(npm audit *)",
+      "Bash(npm run *)",
+      "Bash(npx vercel *)",
+      "WebSearch",
+      "WebFetch(domain:lawware.co.kr)",
+      "WebFetch(domain:home.lawshot.co.kr)",
+      "WebFetch(domain:m.lawtop.co.kr)",
+      "Bash(npx tsc *)",
+      "Bash(awk '{print NR\": [\"$0\"]\"}' .env.local)",
+      "Bash(curl -s -o /dev/null -w \"Status: %{http_code}\\\\n\" https://caseboard-ln4qoewi2-tomokijang30-sources-projects.vercel.app/dashboard)",
+      "Bash(curl -s -o /dev/null -w \"Status: %{http_code}\\\\n\" https://caseboard-ln4qoewi2-tomokijang30-sources-projects.vercel.app/admin/subscriptions)",
+      "Bash(curl -s -o /dev/null -w \"Status: %{http_code}\\\\n\" https://caseboard-ln4qoewi2-tomokijang30-sources-projects.vercel.app/)",
+      "Bash(awk -F= '{print $1, \"=\", \\(length\\($2\\)>20 ? \"<filled, \"length\\($2\\)\" chars>\" : \\($2==\"\\\\\"\\\\\"\" ? \"<EMPTY>\" : \"<short:\"$2\">\"\\)\\)}')",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless --disable-gpu --no-pdf-header-footer --print-to-pdf=\"phone-script.pdf\" \"file:///C:/Users/me/Desktop/CaseBoard/sales/phone-script.html\")",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless --disable-gpu --no-pdf-header-footer \"--print-to-pdf=C:\\\\Users\\\\me\\\\Desktop\\\\CaseBoard\\\\sales\\\\phone-script.pdf\" \"file:///C:/Users/me/Desktop/CaseBoard/sales/phone-script.html\")",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless --disable-gpu --no-pdf-header-footer \"--print-to-pdf=C:\\\\Users\\\\me\\\\Desktop\\\\CaseBoard\\\\sales\\\\meeting-script.pdf\" \"file:///C:/Users/me/Desktop/CaseBoard/sales/meeting-script.html\")",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless --disable-gpu --no-pdf-header-footer \"--print-to-pdf=C:\\\\Users\\\\me\\\\Desktop\\\\CaseBoard\\\\sales\\\\handout.pdf\" \"file:///C:/Users/me/Desktop/CaseBoard/sales/handout.html\")",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless --disable-gpu --no-pdf-header-footer \"--print-to-pdf=C:\\\\Users\\\\me\\\\Desktop\\\\CaseBoard\\\\sales\\\\business-card.pdf\" \"file:///C:/Users/me/Desktop/CaseBoard/sales/business-card.html\")",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless --disable-gpu --no-pdf-header-footer \"--print-to-pdf=C:\\\\Users\\\\me\\\\Desktop\\\\CaseBoard\\\\sales\\\\business-card-back.pdf\" \"file:///C:/Users/me/Desktop/CaseBoard/sales/business-card-back.html\")",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless --disable-gpu --no-pdf-header-footer \"--print-to-pdf=C:\\\\Users\\\\me\\\\Desktop\\\\CaseBoard\\\\sales\\\\business-card-combined.pdf\" \"file:///C:/Users/me/Desktop/CaseBoard/sales/business-card-combined.html\")",
+      "Bash(npx next *)",
+      "Bash(node scripts/seed-demo.mjs)",
+      "Bash(mv \"스크린샷 2026-05-11 151407.png\" screenshot-admin.png)",
+      "Bash(mv \"스크린샷 2026-05-11 151433.png\" screenshot-staff.png)",
+      "Bash(mv \"스크린샷 2026-05-11 151354.png\" screenshot-case-detail.png)",
+      "PowerShell(Test-Path *)",
+      "Bash(git add *)",
+      "Bash(git rm *)"
     ]
   }
 }

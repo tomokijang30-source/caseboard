@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getSuperAdminEmail } from "@/lib/admin/auth";
 import { signOut } from "@/app/login/actions";
 import { StaffDashboard } from "./StaffDashboard";
 import { AdminDashboard } from "./AdminDashboard";
@@ -56,11 +57,13 @@ export default async function DashboardPage({
   const officeName = profile.offices?.name ?? null;
 
   if (profile.role === "admin") {
+    const isSuperAdmin = (await getSuperAdminEmail()) !== null;
     return (
       <AdminDashboard
         userName={profile.name}
         officeName={officeName}
         officeId={profile.office_id}
+        isSuperAdmin={isSuperAdmin}
         searchParams={searchParams}
       />
     );

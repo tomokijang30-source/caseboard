@@ -72,6 +72,10 @@ export default async function LoginPage({
         </p>
 
         <div className="flex justify-center gap-3 pt-2 text-xs text-gray-400">
+          <Link href="/pricing" className="hover:text-gray-900">
+            요금
+          </Link>
+          <span>·</span>
           <Link href="/terms" className="hover:text-gray-900">
             이용약관
           </Link>
