@@ -2,18 +2,21 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8" />
-<title>CaseBoard 콜드콜 시나리오</title>
+<title>CaseBoard 콜드콜 시나리오 v2</title>
 <style>
   @page { size: A4; margin: 8mm 10mm; }
   * { box-sizing: border-box; }
   body {
     font-family: "Malgun Gothic", "맑은 고딕", -apple-system, sans-serif;
-    font-size: 9.2pt;
-    line-height: 1.35;
+    font-size: 9pt;
+    line-height: 1.36;
     color: #111;
     margin: 0;
     padding: 0;
   }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+
   h1 {
     font-size: 13pt;
     margin: 0 0 4px;
@@ -26,14 +29,20 @@
   h1 small { font-size: 8pt; font-weight: normal; color: #555; }
   h2 {
     font-size: 9.5pt;
-    margin: 7px 0 3px;
+    margin: 8px 0 3px;
     background: #111;
     color: white;
-    padding: 2px 6px;
+    padding: 2px 7px;
     border-radius: 2px;
   }
+  h2.alt { background: #0a5cab; }
+  h2.warn { background: #b8420c; }
+  h2.in { background: #117a3d; }
+
   .row { display: flex; gap: 8px; margin-top: 4px; }
   .col { flex: 1; }
+  .col.wide { flex: 1.25; }
+
   .quote {
     background: #fff8dc;
     border-left: 3px solid #d4a017;
@@ -41,13 +50,23 @@
     margin: 3px 0;
     font-weight: 500;
   }
-  .you { color: #0a5cab; }
-  .other { color: #666; font-style: italic; }
+  .quote.you {
+    border-left-color: #0a5cab;
+    background: #eef4fb;
+    color: #0a3268;
+  }
+  .quote.gate {
+    border-left-color: #117a3d;
+    background: #effaf2;
+    color: #0c4a23;
+  }
+  .other { color: #666; font-style: italic; font-size: 8.8pt; margin: 2px 0; }
+
   table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 3px;
-    font-size: 8.6pt;
+    font-size: 8.5pt;
   }
   th, td {
     border: 1px solid #bbb;
@@ -56,16 +75,19 @@
     vertical-align: top;
   }
   th { background: #eee; font-size: 8.4pt; }
-  td.who { width: 30%; font-weight: 600; }
+  td.who { width: 32%; font-weight: 600; }
+
   ul { margin: 2px 0 2px 16px; padding: 0; }
   li { margin-bottom: 1px; }
+
   .tip-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4px 12px;
-    font-size: 8.6pt;
+    gap: 3px 12px;
+    font-size: 8.5pt;
   }
   .tip-grid div { padding-left: 10px; text-indent: -10px; }
+
   .pill {
     display: inline-block;
     background: #e9eef7;
@@ -75,6 +97,8 @@
     font-size: 8pt;
     margin-right: 3px;
   }
+  .pill.warn { background: #fdecea; color: #b00020; }
+
   .footer {
     margin-top: 6px;
     padding-top: 4px;
@@ -86,6 +110,35 @@
   }
   .danger { color: #b00020; font-weight: 600; }
   .ok { color: #0a8043; font-weight: 600; }
+  .key { color: #0a5cab; font-weight: 700; }
+
+  .box {
+    border: 1.5px solid #111;
+    border-radius: 3px;
+    padding: 5px 7px;
+    margin: 4px 0;
+    font-size: 8.7pt;
+  }
+  .box.alert {
+    border-color: #b00020;
+    background: #fdf5f5;
+  }
+  .box.alert b { color: #b00020; }
+
+  .funnel {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 8.5pt;
+    margin: 2px 0;
+  }
+  .funnel span.step {
+    background: #f0f0f0;
+    border-radius: 2px;
+    padding: 1px 5px;
+  }
+  .funnel span.arrow { color: #999; }
+
   @media print {
     body { font-size: 9pt; }
   }
@@ -93,106 +146,205 @@
 </head>
 <body>
 
-<h1>CaseBoard 콜드콜 시나리오 <small>월 165,000원 · 약정 없음 · 기능 요청 빠르면 2~3일, 느려도 1주일 내 반영</small></h1>
+<!-- ============ Page 1 — 통화 시작부터 미팅까지 ============ -->
+<div class="page">
+
+<h1>CaseBoard 콜드콜 시나리오 v2 <small>월 165,000원 · 약정 없음 · 기능 요청 2-3일 반영 · 2026.05 ver.</small></h1>
 
 <div class="row">
-  <div class="col" style="flex: 1.2;">
+  <!-- 좌측: 메인 시나리오 -->
+  <div class="col wide">
 
-    <h2>① 직원이 받음 (gatekeeper)</h2>
-    <div class="other">"법무법인 OO입니다."</div>
-    <div class="quote you">"안녕하세요, <b>사무장님 통화 가능하실까요?</b> 변호사 사무실 사건 관리 프로그램 관련해서 1분만 설명드릴 게 있어서요."</div>
+    <h2>① 게이트키퍼 (사무장 부재 90% 케이스)</h2>
+    <div class="other">"법무법인 OO입니다 / 무슨 일이세요?"</div>
+    <div class="quote you">"안녕하세요, <b>사무장님(/대표님) 통화 가능하실까요?</b> 케이스보드라고 변호사 사무실 사건 관리 프로그램 관련해서 1분만 설명드릴 게 있어서요."</div>
     <ul>
       <li>"잠시만요" → ② 진입</li>
-      <li>"안 계세요" → "보통 몇 시쯤 통화 가능하실까요?" + 시간 박기</li>
-      <li>"무슨 일이세요?" → 위 멘트 그대로 다시</li>
-      <li>"메일 보내주세요" → "네, 다만 1분만 통화하시면 메일 안 보셔도 되는데요. 오후에 가능 시간 있으세요?"</li>
+      <li>"외근/회의 중" → <b>한 줄 후킹 메시지</b> (아래)</li>
+      <li>"무슨 일이세요?" → "사무장님께 직접 말씀드리고 싶어서요. 보통 몇 시쯤 통화 가능하세요?"</li>
     </ul>
+    <div class="quote gate">"<b>케이스보드 대표 장유승</b>이고요, <b>변호사 사무실 사건 진행상황을 대표님이 한눈에 보시는 프로그램</b>이에요. 비슷한 규모 사무실에서 쓰고 계셔서, 사무장님께 5분만 보여드리고 싶어서 연락드렸다고 전해주시면 감사하겠습니다. 010-7647-1312로 편하실 때 주시면 됩니다."</div>
+    <div style="font-size:8.5pt;color:#555;">→ 콜백 안 오면 <b>2-3일 후</b> "지난번 메시지 받으셨을까요?" 재시도 (콜드콜 X, 통과율 ↑)</div>
 
-    <h2>② 사무장/대표 받음 — 페인 질문</h2>
-    <div class="quote you">"안녕하세요 사무장님, 통화 감사합니다.<br>혹시 사무실에 변호사+직원 합쳐 몇 분 계세요?"</div>
-    <div class="other">"5명요" / "10명입니다"</div>
-    <div class="quote you">"아 그럼 직원분들 사건 진행상황 파악하실 때 보통 어떻게 보세요? 엑셀? 카톡? 다른 프로그램?"</div>
+    <h2 class="alt">② 사무장/대표 본인 받음 — 후킹 30초</h2>
+    <div class="quote you">"안녕하세요 [사무장님/대표님], 통화 감사합니다.<br>케이스보드라고, 변호사 사무실 사건 관리 프로그램이에요. <b>대표님이 직원 케이스 진행상황을 한 화면으로 보실 수 있게</b> 만든 거고요, <b>마감 임박이나 정체된 사건도 자동으로 위로</b> 올라옵니다."</div>
+    <div class="box">
+      ⚠️ <b>"몇 명 계세요?" 절대 X.</b> 후킹 안에 <b>"직원 5명 이상이면 카톡·엑셀로 잘 안 되시잖아요"</b> 한 줄 넣으면 상대가 자연스럽게 인원 노출함.
+    </div>
 
-    <h2>③ 공감 + 솔루션 한 줄</h2>
-    <div class="other">엑셀/카톡 답변 시:</div>
-    <div class="quote you">"네 많이들 그러시는데, 직원 5명 넘으면 누가 마지막에 수정했는지, 어떤 사건이 며칠째 멈춰있는지 한눈에 보기 어려우시죠? 저희 프로그램은 화면 1개로 그걸 다 보여드립니다."</div>
-    <div class="other">케이스노트 등 SW 답변 시:</div>
-    <div class="quote you">"좋은 SW 쓰시네요. 혹시 새 기능 요청해도 답이 늦거나 가격 부담은 없으세요? 저희는 원하시는 기능 <b>빠르면 2~3일, 느려도 1주일</b> 안에 추가, 가격 165,000원 고정입니다."</div>
+    <h2 class="alt">③ 가치 + 가격 (15초)</h2>
+    <div class="quote you">"<b>인원수 무관 월 165,000원</b>이고요, <b>약정 없이 매월 결제</b>입니다. 별로면 다음 달부터 안 내시면 끝나요. 필요한 기능 요청하시면 <b>2-3일 안에 만들어드리고요</b>."</div>
 
-    <h2>④ 미팅 약속 (가장 중요)</h2>
-    <div class="quote you">"월 165,000원이고 <b>약정 없이 매월 결제</b>입니다. 별로면 다음 달부터 안 내시면 끝나요. 전화로 듣는 것보다 5분만 화면 보시면 훨씬 빠르거든요. 사무실 한 번 들러도 될까요? <b>이번 주 화·수·목 중 오후 2시나 3시</b>요."</div>
-
-    <h2>⑤ 잡혔을 때 마무리</h2>
-    <div class="quote you">"감사합니다, 수요일 오후 2시 들르겠습니다. 주소가 OOO 맞으세요? 5분 안에 끝내고 갑니다. 사무장님 함자 한 번만 더 여쭤봐도 될까요?"</div>
+    <h2 class="alt">④ 미팅 클로징 (가장 중요)</h2>
+    <div class="quote you">"전화로 다 설명드리긴 어렵고, <b>5-10분만 화면 보시면 감이 바로 오실 거예요</b>. 관악구라 사무실 들르는 거 부담 없어서요. <b>이번 주 화·수·목 중 오후 2시나 3시</b> 가능하실까요?"</div>
+    <div class="box alert">
+      <b>모호한 답 = 무조건 미팅 push.</b> "검토해보고 연락드릴게요" 받고 끊으면 100% 죽음. 반드시 <b>구체적 시간</b> 잡고 끊기.
+    </div>
 
   </div>
 
+  <!-- 우측: 시간대/타겟/목표 -->
   <div class="col">
 
-    <h2>거절 응대 8 (그대로 외워)</h2>
+    <h2>전화 시간대 (오늘 실증)</h2>
     <table>
-      <tr><th class="who">상대</th><th>너</th></tr>
-      <tr><td class="who">관심 없어요</td><td>혹시 지금 사건 관리 어떻게 하시는지만 한 번 여쭤봐도 될까요?</td></tr>
-      <tr><td class="who">엑셀로 잘 써요</td><td>5명 넘으면 마지막 수정자 헷갈릴 때 있으시죠? 5분만 보시면 차이 바로 보세요.</td></tr>
-      <tr><td class="who">메일 보내세요</td><td>보내드릴게요. 다만 화요일에 5분만 들러서 자료 같이 보면 어떠세요?</td></tr>
-      <tr><td class="who">지금 바빠요</td><td>다음 주 화·수·목 중 5분만 들러도 될까요?</td></tr>
-      <tr><td class="who">필요 없어요</td><td>나중에라도 5명 넘으시면 연락처 남겨드릴까요?</td></tr>
-      <tr><td class="who">비싸요</td><td>직원 한 분 1주 인건비예요. 사무실 전체가 1년 사용합니다.</td></tr>
-      <tr><td class="who">보안 걱정</td><td>한국 서버 암호화 저장, 의뢰인 실명 안 적어도 운영 가능합니다.</td></tr>
-      <tr><td class="who">우린 작아요</td><td>몇 분이세요? 5명 미만이시면 늘어나실 때 다시 연락드려도 될까요?</td></tr>
+      <tr><th>시간</th><th>판단</th></tr>
+      <tr><td>09:00~10:00</td><td>출근 어수선, <span class="danger">피하기</span></td></tr>
+      <tr><td><b>10:00~11:30</b></td><td><span class="ok">골든타임 #1</span></td></tr>
+      <tr><td>11:30~13:00</td><td><span class="danger">점심, 짜증</span></td></tr>
+      <tr><td>13:00~14:00</td><td>점심 직후, 비추</td></tr>
+      <tr><td><b>14:00~15:30</b></td><td><span class="ok">골든타임 #2</span></td></tr>
+      <tr><td>15:30~16:30</td><td>OK, 외근 가능성</td></tr>
+      <tr><td>16:30~18:00</td><td><span class="danger">마감 모드</span></td></tr>
     </table>
+
+    <h2>오늘의 목표 깔때기</h2>
+    <div class="funnel"><span class="step">10통</span><span class="arrow">→</span><span class="step">2-3명 결정권자</span></div>
+    <div class="funnel"><span class="arrow">→</span><span class="step">1건 미팅 약속</span><span class="arrow">→</span></div>
+    <div class="funnel"><span class="step">미팅 5건 → 1건 계약</span></div>
+    <div style="font-size:8.5pt;color:#555;margin-top:2px;">거절 8/10 = 정상. 거절 ≠ 너에 대한 부정.</div>
 
     <h2>음성 가이드</h2>
     <div class="tip-grid">
-      <div><b>속도</b>: 평소보다 약간 천천히</div>
-      <div><b>톤</b>: 약간 낮게, 안정적</div>
-      <div><b>크기</b>: 평소 +10%</div>
-      <div><b>자세</b>: <span class="ok">서서</span> 통화</div>
+      <div><b>속도</b>: 약간 천천히</div>
+      <div><b>톤</b>: 낮게 안정적</div>
+      <div><b>볼륨</b>: +10%</div>
+      <div><b>자세</b>: <span class="ok">서서</span></div>
       <div><b>표정</b>: 살짝 미소</div>
-      <div><b>강조</b>: <b>1분만</b>, <b>약정없음</b>, <b>5분</b></div>
+      <div><b>강조</b>: 165k · 약정X · 5분</div>
     </div>
 
-    <h2>전화 시간대</h2>
-    <table>
-      <tr><th>시간</th><th>판단</th></tr>
-      <tr><td>09:00~10:00</td><td>직원 출근 정리, <span class="ok">연결 잘 됨</span></td></tr>
-      <tr><td>10:00~11:30</td><td>사무장 외근/회의 가능성</td></tr>
-      <tr><td>11:30~13:00</td><td><span class="danger">점심, 짜증날 수도</span></td></tr>
-      <tr><td><b>14:00~15:30</b></td><td><span class="ok">골든타임 — 5~10통 몰아치기</span></td></tr>
-      <tr><td>15:30~17:00</td><td>외근/방문상담</td></tr>
-      <tr><td>17:00~18:00</td><td><span class="danger">마감 모드, 짜증</span></td></tr>
-    </table>
-
-    <h2>절대 안 됨</h2>
-    <ul style="font-size:8.6pt;">
-      <li class="danger">"사장님 친구입니다" 거짓말</li>
-      <li class="danger">"5분만요!" 매달리기</li>
-      <li class="danger">개인 번호 요구</li>
-      <li class="danger">"안 받으시면 손해" 협박조</li>
-    </ul>
-
     <h2>1순위 타겟</h2>
-    <div style="font-size:8.6pt;">
+    <div style="font-size:8.5pt;">
       <span class="pill">가사/이혼</span>
       <span class="pill">교통사고</span>
       <span class="pill">개인회생/파산</span><br>
       <span class="pill">부동산</span>
-      <span class="pill">변호사 2~5명</span>
-      <span class="pill">대표 30~50대</span>
+      <span class="pill">5-15명</span>
+      <span class="pill">대표 30-50대</span>
     </div>
 
-    <h2>오늘 목표</h2>
-    <div style="font-size:8.8pt;">
-      10통 시도 → 2~3통 결정권자 연결 → <b>1건 미팅</b><br>
-      <span style="color:#555;">거절 8번이 정상. 거절 = 데이터, 너 부정 아님.</span>
-    </div>
+    <h2 class="warn">절대 안 됨</h2>
+    <ul style="font-size:8.5pt;">
+      <li class="danger">"5분만요!" 매달리기</li>
+      <li class="danger">개인 휴대전화 요구</li>
+      <li class="danger">"안 받으시면 손해" 협박조</li>
+      <li class="danger">미팅 안 잡고 가격만 깎기</li>
+      <li class="danger"><b>무료체험 카드 절대 X</b> (앵커 0원 = 죽음)</li>
+    </ul>
 
   </div>
 </div>
 
 <div class="footer">
   <span>CaseBoard · 장유승 · 010-7647-1312 · caseboard443@gmail.com</span>
-  <span>v1 · 인쇄 후 책상 옆에 두고 통화</span>
+  <span>v2 · p.1/2 — 통화 시작 ~ 미팅 클로징</span>
+</div>
+
+</div>
+<!-- ============ Page 2 — 거절 응대 + 변칙 시나리오 ============ -->
+<div class="page">
+
+<h1>거절 응대 + 변칙 시나리오 <small>인바운드 콜백 · 자료 요청 · 모호한 답 처리</small></h1>
+
+<div class="row">
+  <div class="col wide">
+
+    <h2>거절 응대 10 (그대로 외워)</h2>
+    <table>
+      <tr><th class="who">상대</th><th>너</th></tr>
+      <tr><td class="who">관심 없어요</td><td>혹시 지금 사건 관리 어떻게 하시는지만 1분 여쭤봐도 될까요?</td></tr>
+      <tr><td class="who">엑셀/카톡으로 잘 써요</td><td>5명 넘으면 마지막 수정자 헷갈릴 때 있으시죠? 5분만 보시면 차이 바로 오십니다.</td></tr>
+      <tr><td class="who">이미 OOO 쓰고 있어요</td><td>좋은 거 쓰시네요. 차이점은 <b>165k 정액·기능 2-3일 반영</b>이에요. 비교만 5분 보시는 건 어떠세요?</td></tr>
+      <tr><td class="who">메일로 자료 보내세요</td><td>네 바로 보내드릴게요. <b>다만 화·수 중 5분만 들러서 자료 같이 보면</b> 훨씬 빠르실 거예요.</td></tr>
+      <tr><td class="who">지금 바빠요</td><td>그러시겠죠. <b>오늘 오후 3시</b>나 <b>내일 오전 10시</b> 중 편하신 때 다시 연락드려도 될까요?</td></tr>
+      <tr><td class="who">대표(/사무장)랑 상의해보고요</td><td>네 그러시죠. 차라리 <b>대표님이랑 같이 한 번에 5분만</b> 보시는 게 어떠세요? 두 번 설명 안 하셔도 되고요.</td></tr>
+      <tr><td class="who">생각해보고 연락드릴게요</td><td>네 알겠습니다. 혹시 <b>금요일까지</b> 답 주실 수 있을까요? 그날까지 답 없으시면 제가 살짝 한 번 더 연락드리겠습니다.</td></tr>
+      <tr><td class="who">필요 없어요</td><td>네 알겠습니다. 나중에 직원 늘거나 사건 많아지시면 010-7647-1312로 편하게 연락주세요.</td></tr>
+      <tr><td class="who">비싸요</td><td>직원 1명 1주 인건비예요. 사무실 전체 1년 사용입니다. 그리고 인원 5명이든 15명이든 동일 단가예요.</td></tr>
+      <tr><td class="who">보안 걱정</td><td>한국 서버(서울 리전), 데이터베이스 암호화 저장입니다. 의뢰인 실명 안 적으셔도 운영 가능해요.</td></tr>
+    </table>
+
+    <h2 class="in">⑤ 인바운드 콜백 받기 (메시지 보고 연락 옴)</h2>
+    <div class="quote you">"네 안녕하세요, <b>케이스보드 장유승입니다.</b>"</div>
+    <div class="box">
+      <b>여기서 멈춤.</b> 상대가 자기 신원 밝히게 두기. "어떻게 도와드릴까요" X. <b>페인 질문 X</b> (인바운드는 콜드콜과 다름, 이미 의사 있는 사람).
+    </div>
+    <div class="other">상대: "OO법무법인 OO 사무장(/대표)인데요, 메모 받았습니다"</div>
+    <div class="quote you">"아 네 사무장님(/대표님), 연락 주셔서 감사합니다."</div>
+    <ul>
+      <li>상대가 "어떤 거예요?" 물으면 → 30초 핏치 (페이지1 ②③)</li>
+      <li>"자료 보내달라" → 메일 받고 + 미팅 동시 제안 (아래)</li>
+      <li>"필요 없어요" → 깔끔하게 마무리, 연락처 남기고 끊기</li>
+    </ul>
+
+    <h2 class="in">⑥ 자료 요청 처리 (메일 + 미팅 동시 박기)</h2>
+    <div class="quote you">"네 바로 이메일로 자료 보내드릴게요. 이메일 알려주시면 5분 안에 보내드리겠습니다."</div>
+    <div class="other">(이메일 받은 후, 같은 통화 안에서)</div>
+    <div class="quote you">"혹시 자료 보시고 직접 보여드리는 게 편하시면 <b>이번 주 화·수 중 5-10분만</b> 사무실에 들르겠습니다. 부담 없이 편하실 때 말씀 주시면 됩니다."</div>
+    <ul>
+      <li>발송 후 문자 1줄: <i>"방금 이메일 보내드렸습니다. 확인 부탁드려요. 감사합니다 :)"</i></li>
+      <li>2-3일 후 응답 없으면 가벼운 후속 1회</li>
+    </ul>
+
+  </div>
+
+  <div class="col">
+
+    <h2>⑦ 후속 콜 (메시지 남긴 곳)</h2>
+    <div class="quote you">"안녕하세요, 케이스보드 장유승입니다. <b>지난번 메시지 남겨드렸는데 혹시 전달받으셨을까요?</b>"</div>
+    <ul>
+      <li>"네 받았어요" → 페이지1 ②③④ 흐름</li>
+      <li>"못 받았는데요" → "아 그러시군요. 다름이 아니라..." + 페이지1 ② 흐름</li>
+      <li>"사무장 없어요" → 다시 메시지 남기되 한 번만. 3번째 시도 X.</li>
+    </ul>
+    <div class="box">
+      <b>한 사무실당 후속 1번만.</b> 두 번 푸시하면 거부감. 1회 후 답 없으면 일단 보류.
+    </div>
+
+    <h2>⑧ 미팅 잡혔을 때 마무리</h2>
+    <div class="quote you">"감사합니다, 수요일 오후 2시 들르겠습니다. 주소는 OOO 맞으세요? 5-10분 안에 끝내고 갑니다.<br>혹시 그날 <b>대표님(/사무장님)도 같이 계실 수 있을까요?</b> 결정 한 번에 보시는 게 빠르실 거예요."</div>
+    <ul>
+      <li>주소 재확인</li>
+      <li>의사결정권자 동석 요청</li>
+      <li>본인 이름 + 직함 메모</li>
+      <li>전화 마치고 <b>카톡으로 시간·주소 한 번 더</b> 박기</li>
+    </ul>
+
+    <h2 class="warn">모호한 답 처리 매뉴얼</h2>
+    <table>
+      <tr><th>모호한 답</th><th>대응</th></tr>
+      <tr><td>"보고 연락드릴게요"</td><td>"금요일까지 답 주실 수 있을까요?"</td></tr>
+      <tr><td>"대표랑 상의해볼게요"</td><td>"같이 한 번에 보시는 건 어떠세요?"</td></tr>
+      <tr><td>"생각해보고요"</td><td>다음 약속 날짜 박기</td></tr>
+      <tr><td>"메일 보내주세요"</td><td>메일 + 미팅 동시 제안</td></tr>
+      <tr><td>"관심 없어요"</td><td>깔끔 퇴장, 연락처만</td></tr>
+    </table>
+
+    <h2 class="warn">절대 원칙 5</h2>
+    <ol style="font-size:8.5pt;margin-left:18px;">
+      <li>모호한 답 = <b>구체적 다음 액션</b> 박기</li>
+      <li>가격은 <b>미팅 잡힐 때까지 X</b> (물어보면 솔직히 답)</li>
+      <li>이메일만 보내고 끝내지 말기 (항상 미팅 동시 제안)</li>
+      <li>한 사무실당 푸시 <b>최대 2번</b> (콜드 1 + 후속 1)</li>
+      <li><b>무료체험 절대 X.</b> 첫 고객 할인은 협상 단계에서만</li>
+    </ol>
+
+    <h2>도구</h2>
+    <ul style="font-size:8.5pt;">
+      <li>1장 핸드아웃: <b>handout.pdf</b></li>
+      <li>3장 상세: <b>detailed-handout.pdf</b></li>
+      <li>데모: caseboard-eight.vercel.app</li>
+    </ul>
+
+  </div>
+</div>
+
+<div class="footer">
+  <span>CaseBoard · 장유승 · 010-7647-1312 · caseboard443@gmail.com</span>
+  <span>v2 · p.2/2 — 거절·인바운드·후속</span>
+</div>
+
 </div>
 
 </body>

@@ -6,9 +6,11 @@ import { createInvite, revokeInvite } from "@/app/invites/actions";
 import { deleteCase } from "@/app/cases/actions";
 import { ConfirmButton } from "@/app/cases/ConfirmButton";
 import { StatusButtons } from "@/app/cases/StatusButtons";
+import { SubmitButton } from "@/app/cases/SubmitButton";
 import { type CaseStatus, STATUS_LABEL, STATUS_PILL } from "./status";
 import { sortCasesByUrgency, staleDays, deadlineUrgency } from "./case-utils";
 import { HelpButton } from "./HelpButton";
+import { InviteCodeCopy } from "./InviteCodeCopy";
 import {
   type DashboardSearchParams,
   StatusFilter,
@@ -194,6 +196,12 @@ export async function AdminDashboard({
           </form>
         </div>
       </header>
+
+      {searchParams.error && (
+        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          {searchParams.error}
+        </div>
+      )}
 
       <BillingBanner status={subscription?.status} />
 
@@ -403,12 +411,12 @@ function InviteSection({ invites }: { invites: Invite[] }) {
             <option value="7">7일</option>
             <option value="30">30일</option>
           </select>
-          <button
-            type="submit"
+          <SubmitButton
+            pendingText="발급 중..."
             className="rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800"
           >
             새 코드 발급
-          </button>
+          </SubmitButton>
         </form>
       </div>
 
@@ -424,9 +432,7 @@ function InviteSection({ invites }: { invites: Invite[] }) {
               className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-gray-200 bg-gray-50 px-3 py-2"
             >
               <div className="flex items-center gap-3">
-                <span className="font-mono text-base font-semibold tracking-widest text-gray-900">
-                  {i.code}
-                </span>
+                <InviteCodeCopy code={i.code} />
                 <span className="text-xs text-gray-500">
                   {i.expires_at
                     ? `만료: ${new Date(i.expires_at).toLocaleDateString("ko-KR")}`

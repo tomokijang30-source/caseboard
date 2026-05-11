@@ -29,7 +29,12 @@
       "Bash(mv \"스크린샷 2026-05-11 151354.png\" screenshot-case-detail.png)",
       "PowerShell(Test-Path *)",
       "Bash(git add *)",
-      "Bash(git rm *)"
+      "Bash(git rm *)",
+      "Bash(git reset *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\me\\\\Desktop\\\\CaseBoard\" -Recurse -Force)",
+      "Bash(Select-Object FullName)"
     ]
   }
 }

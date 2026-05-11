@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { updateCase } from "@/app/cases/actions";
+import { SubmitButton } from "@/app/cases/SubmitButton";
 
 export default async function CaseEditPage({
   params,
@@ -67,13 +68,16 @@ export default async function CaseEditPage({
         </label>
 
         <label className="block">
-          <span className="text-sm font-medium">마감일 (선택)</span>
+          <span className="text-sm font-medium">다음 기일·마감 (선택)</span>
           <input
             type="date"
             name="deadline"
             defaultValue={c.deadline ?? ""}
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-900 focus:outline-none"
           />
+          <span className="mt-1 block text-xs text-gray-500">
+            예: 답변서 제출일, 변론기일, 선고기일 등. 가장 가까운 일정만 입력하시면 대시보드에서 자동으로 위로 올라옵니다.
+          </span>
         </label>
 
         <p className="text-xs text-gray-500">
@@ -85,12 +89,12 @@ export default async function CaseEditPage({
         )}
 
         <div className="flex items-center gap-2">
-          <button
-            type="submit"
+          <SubmitButton
+            pendingText="저장 중..."
             className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
           >
             저장
-          </button>
+          </SubmitButton>
           <Link
             href="/dashboard"
             className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50"

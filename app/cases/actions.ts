@@ -11,11 +11,15 @@ export async function createCase(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   const client_name = String(formData.get("client_name") ?? "").trim();
 
-  if (!title || !client_name) return;
+  if (!title || !client_name) {
+    redirect(`/dashboard?error=${encodeURIComponent("사건명과 의뢰인을 모두 입력하세요.")}`);
+  }
 
   const supabase = createClient();
   const { error } = await supabase.from("cases").insert({ title, client_name });
-  if (error) console.error("createCase failed:", error.message);
+  if (error) {
+    redirect(`/dashboard?error=${encodeURIComponent("케이스 등록 실패: " + error.message)}`);
+  }
 
   revalidatePath("/dashboard");
 }
@@ -31,9 +35,12 @@ export async function updateCaseStatus(formData: FormData) {
     .from("cases")
     .update({ status })
     .eq("id", id);
-  if (error) console.error("updateCaseStatus failed:", error.message);
+  if (error) {
+    redirect(`/dashboard?error=${encodeURIComponent("상태 변경 실패: " + error.message)}`);
+  }
 
   revalidatePath("/dashboard");
+  revalidatePath(`/cases/${id}`);
 }
 
 export async function updateCase(formData: FormData) {
@@ -69,11 +76,16 @@ export async function updateCase(formData: FormData) {
 export async function addCaseNote(formData: FormData) {
   const case_id = String(formData.get("case_id") ?? "");
   const body = String(formData.get("body") ?? "").trim();
-  if (!case_id || !body) return;
+  if (!case_id) return;
+  if (!body) {
+    redirect(`/cases/${case_id}?error=${encodeURIComponent("메모 내용을 입력하세요.")}`);
+  }
 
   const supabase = createClient();
   const { error } = await supabase.from("case_notes").insert({ case_id, body });
-  if (error) console.error("addCaseNote failed:", error.message);
+  if (error) {
+    redirect(`/cases/${case_id}?error=${encodeURIComponent("메모 추가 실패: " + error.message)}`);
+  }
 
   revalidatePath(`/cases/${case_id}`);
   revalidatePath("/dashboard");
@@ -85,7 +97,9 @@ export async function deleteCase(formData: FormData) {
 
   const supabase = createClient();
   const { error } = await supabase.from("cases").delete().eq("id", id);
-  if (error) console.error("deleteCase failed:", error.message);
+  if (error) {
+    redirect(`/dashboard?error=${encodeURIComponent("케이스 삭제 실패: " + error.message)}`);
+  }
 
   revalidatePath("/dashboard");
 }

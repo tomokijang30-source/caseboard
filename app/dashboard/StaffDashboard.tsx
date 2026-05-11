@@ -4,6 +4,7 @@ import { signOut } from "@/app/login/actions";
 import { createCase, deleteCase } from "@/app/cases/actions";
 import { ConfirmButton } from "@/app/cases/ConfirmButton";
 import { StatusButtons } from "@/app/cases/StatusButtons";
+import { SubmitButton } from "@/app/cases/SubmitButton";
 import { type CaseStatus, STATUS_LABEL } from "./status";
 import { sortCasesByUrgency, staleDays, deadlineUrgency } from "./case-utils";
 import { HelpButton } from "./HelpButton";
@@ -75,6 +76,12 @@ export async function StaffDashboard({
         </div>
       </header>
 
+      {searchParams.error && (
+        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          {searchParams.error}
+        </div>
+      )}
+
       <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
         <h2 className="text-sm font-semibold">새 케이스 등록</h2>
         <form
@@ -93,12 +100,12 @@ export async function StaffDashboard({
             placeholder="의뢰인"
             className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-900 focus:outline-none"
           />
-          <button
-            type="submit"
+          <SubmitButton
+            pendingText="등록 중..."
             className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
           >
             등록
-          </button>
+          </SubmitButton>
         </form>
         <p className="mt-2 text-xs text-gray-500">
           등록 후 사건 클릭 → 마감일 수정 · 진행 메모 작성.

@@ -5,6 +5,7 @@ export type DashboardSearchParams = {
   q?: string;
   status?: string;
   staff?: string;
+  error?: string;
 };
 
 export function isStatus(s: string | undefined): s is CaseStatus {

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { addCaseNote } from "@/app/cases/actions";
 import { StatusButtons } from "@/app/cases/StatusButtons";
+import { SubmitButton } from "@/app/cases/SubmitButton";
 import { type CaseStatus, STATUS_LABEL, STATUS_PILL } from "@/app/dashboard/status";
 
 type CaseDetail = {
@@ -25,8 +26,10 @@ type Note = {
 
 export default async function CaseDetailPage({
   params,
+  searchParams,
 }: {
   params: { id: string };
+  searchParams: { error?: string };
 }) {
   const supabase = createClient();
 
@@ -58,6 +61,12 @@ export default async function CaseDetailPage({
       >
         ← 대시보드
       </Link>
+
+      {searchParams.error && (
+        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          {searchParams.error}
+        </div>
+      )}
 
       <header className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
         <div className="flex items-start justify-between gap-3">
@@ -119,12 +128,12 @@ export default async function CaseDetailPage({
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-900 focus:outline-none"
           />
           <div className="flex justify-end">
-            <button
-              type="submit"
+            <SubmitButton
+              pendingText="추가 중..."
               className="rounded-md bg-gray-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-gray-800"
             >
               메모 추가
-            </button>
+            </SubmitButton>
           </div>
         </form>
 

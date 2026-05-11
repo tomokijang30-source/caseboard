@@ -64,12 +64,20 @@ export default async function LoginPage({
           로그인
         </button>
 
-        <p className="text-center text-sm text-gray-500">
-          처음이신가요?{" "}
-          <Link href="/signup" className="font-medium text-gray-900 hover:underline">
+        <div className="flex items-center justify-between text-sm">
+          <Link
+            href="/login/forgot"
+            className="text-gray-500 hover:text-gray-900"
+          >
+            비밀번호를 잊으셨나요?
+          </Link>
+          <Link
+            href="/signup"
+            className="font-medium text-gray-900 hover:underline"
+          >
             회원가입
           </Link>
-        </p>
+        </div>
 
         <div className="flex justify-center gap-3 pt-2 text-xs text-gray-400">
           <Link href="/pricing" className="hover:text-gray-900">
