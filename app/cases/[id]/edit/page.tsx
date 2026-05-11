@@ -14,7 +14,7 @@ export default async function CaseEditPage({
   const supabase = createClient();
   const { data: c } = await supabase
     .from("cases")
-    .select("id, title, client_name, case_no, deadline")
+    .select("id, title, client_name, case_no, deadline, notes")
     .eq("id", params.id)
     .single();
 
@@ -80,9 +80,19 @@ export default async function CaseEditPage({
           </span>
         </label>
 
-        <p className="text-xs text-gray-500">
-          진행 메모는 케이스 상세 페이지의 "진행 메모" 섹션에서 추가하세요.
-        </p>
+        <label className="block">
+          <span className="text-sm font-medium">사건 메모 (선택)</span>
+          <textarea
+            name="notes"
+            rows={5}
+            defaultValue={c.notes ?? ""}
+            placeholder="예: 의뢰인 010-XXXX-XXXX, 상대방 OOO변호사, 사고 일자 2026-04-15, 핵심 쟁점·기본 정보 등"
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-900 focus:outline-none"
+          />
+          <span className="mt-1 block text-xs text-gray-500">
+            이 사건의 변치 않는 기본 정보를 정리해두는 곳. 시간순 누적되는 "진행 메모"와는 별도로, 자주 참고할 정보를 한 줄에 모아두세요.
+          </span>
+        </label>
 
         {searchParams.error && (
           <p className="text-sm text-red-600">{searchParams.error}</p>

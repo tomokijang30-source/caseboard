@@ -92,16 +92,6 @@ export default async function CaseDetailPage({
           </div>
           <StatusButtons caseId={c.id} current={c.status} />
         </div>
-        {c.notes && (
-          <div className="mt-3 rounded-md border border-gray-200 bg-gray-50 px-3 py-2">
-            <div className="text-[10px] font-medium uppercase tracking-wide text-gray-500">
-              이전 메모
-            </div>
-            <p className="mt-1 whitespace-pre-wrap text-sm text-gray-700">
-              {c.notes}
-            </p>
-          </div>
-        )}
         <div className="mt-3">
           <Link
             href={`/cases/${c.id}/edit`}
@@ -111,6 +101,30 @@ export default async function CaseDetailPage({
           </Link>
         </div>
       </header>
+
+      <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold">사건 메모</h2>
+          <Link
+            href={`/cases/${c.id}/edit`}
+            className="text-xs text-gray-500 hover:text-gray-900"
+          >
+            수정 →
+          </Link>
+        </div>
+        <p className="mt-0.5 text-xs text-gray-500">
+          사건의 기본 정보를 한 곳에. 의뢰인 연락처, 상대방, 핵심 쟁점 등.
+        </p>
+        {c.notes ? (
+          <p className="mt-3 whitespace-pre-wrap rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-800">
+            {c.notes}
+          </p>
+        ) : (
+          <p className="mt-3 rounded-md border border-dashed border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">
+            아직 작성된 사건 메모가 없습니다. <Link href={`/cases/${c.id}/edit`} className="font-medium text-gray-800 underline hover:text-gray-900">정보 수정</Link>에서 작성하세요.
+          </p>
+        )}
+      </section>
 
       <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
         <h2 className="text-sm font-semibold">진행 메모</h2>

@@ -49,6 +49,7 @@ export async function updateCase(formData: FormData) {
   const client_name = String(formData.get("client_name") ?? "").trim();
   const deadlineRaw = String(formData.get("deadline") ?? "").trim();
   const caseNoRaw = String(formData.get("case_no") ?? "").trim();
+  const notesRaw = String(formData.get("notes") ?? "");
 
   if (!id || !title || !client_name) {
     redirect(`/cases/${id}/edit?error=${encodeURIComponent("사건명과 의뢰인은 필수입니다.")}`);
@@ -62,6 +63,7 @@ export async function updateCase(formData: FormData) {
       client_name,
       case_no: caseNoRaw === "" ? null : caseNoRaw,
       deadline: deadlineRaw === "" ? null : deadlineRaw,
+      notes: notesRaw.trim() === "" ? null : notesRaw,
     })
     .eq("id", id);
 
