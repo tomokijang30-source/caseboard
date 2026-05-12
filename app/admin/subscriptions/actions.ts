@@ -103,11 +103,27 @@ export async function deleteOffice(formData: FormData) {
   await requireSuperAdmin();
   const officeId = getOfficeId(formData);
   const confirmation = String(formData.get("confirmation") ?? "").trim();
-  if (confirmation !== "삭제") {
-    throw new Error("confirmation text mismatch");
-  }
 
   const admin = createAdminClient();
+
+  // 사무실 fetch — is_demo와 이름 확인용
+  const { data: office, error: fetchErr } = await admin
+    .from("offices")
+    .select("name, is_demo")
+    .eq("id", officeId)
+    .single<{ name: string; is_demo: boolean }>();
+
+  if (fetchErr || !office) {
+    throw new Error("사무실을 찾을 수 없습니다: " + (fetchErr?.message ?? "unknown"));
+  }
+
+  // 데모: "삭제" 입력 OK / 실고객: 사무실명 정확히 일치해야 함
+  const required = office.is_demo ? "삭제" : office.name;
+  if (confirmation !== required) {
+    throw new Error(
+      `확인 텍스트 불일치. ${office.is_demo ? "데모" : "실고객"} 사무실 삭제는 "${required}" 입력 필요.`,
+    );
+  }
 
   // 종속 테이블 명시적 정리. cases.notes / case_events 등은 cases CASCADE로 처리됨.
   await admin.from("case_notes").delete().eq("office_id", officeId);
