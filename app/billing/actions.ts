@@ -81,15 +81,24 @@ export async function reportPayment() {
     minute: "2-digit",
   });
 
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
+  const adminUrl = baseUrl
+    ? `${baseUrl}/admin/subscriptions`
+    : "/admin/subscriptions";
+
   await sendDiscordNotification(
     [
-      "💰 **결제 완료 신고**",
+      "**[결제 완료 신고]**",
       `사무실: **${officeName}**`,
       `대표: ${profile.name} (${user.email})`,
       `예상 금액: ${formatKRW(total)} (VAT 포함)`,
       `현재 상태: ${sub?.status ?? "unknown"}`,
       `신고 시각: ${krwTime}`,
-      `→ 토스 확인 후 어드민에서 활성화/연장: ${BILLING.contactEmail.split("@")[0]} 사이트의 /admin/subscriptions`,
+      ``,
+      `→ 토스 확인 후 어드민에서 활성화/연장`,
+      adminUrl,
     ].join("\n"),
   );
 
